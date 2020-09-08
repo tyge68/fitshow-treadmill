@@ -1,0 +1,98 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+  <script src="https://cdn.jsdelivr.net/momentjs/2.14.1/moment-with-locales.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-duration-format/2.3.2/moment-duration-format.min.js" integrity="sha512-ej3mVbjyGQoZGS3JkES4ewdpjD8UBxHRGW+MN5j7lg3aGQ0k170sFCj5QJVCFghZRCio7DEmyi+8/HAwmwWWiA==" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">  
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  <script type="module" src="init.js"></script>
+</head>
+<body>
+
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <button id="connect" type="button" class="btn btn-primary active">Connect</button>
+        <button id="start" type="button" class="btn btn-primary" disabled>Start</button>
+        <button id="stop" type="button" class="btn btn-primary" disabled>Stop</button>
+        <div class="btn-group" role="group" aria-label="program related">
+          <button id="program" type="button" class="btn btn-primary" disabled>Start Program</button>       
+          <div class="btn-group" role="group">
+            <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+            <div id="programList" class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+            </div>
+          </div>
+        </div>
+        <button id="info" aria-expanded="false" aria-controls="statusInfo" type="button" data-toggle="collapse" data-target="#statusInfo" class="btn btn-primary" disabled>Status</button>  
+        <button id="chart" aria-expanded="false" aria-controls="chartPanel" type="button" data-toggle="collapse" data-target="#chartPanel" class="btn btn-primary">Chart</button>  
+      </div>
+    </div>
+    <div class="row">
+      <div class="col " id="connectedPanel">
+        <table class="table">
+          <tr>
+            <td>Speed (km/h)</td>
+            <td>Incline (%)</td>
+            <td>Total Distance (meters)</td>
+            <td>Total Time (seconds)</td>
+            <td>Total Calories</td>
+          </tr>
+          <tr>
+            <td id="speed"></td>
+            <td id="incline"></td>
+            <td id="totalDistance"></td>
+            <td id="totalTime"></td>
+            <td id="totalCalories"></td>
+          </tr>
+        </table>
+        <div class="progress my-3">
+          <div id="programProgress" class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="progress my-3">
+          <div id="stepProgress" class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <label>Incline</label>
+              <button type="button" class="btn btn-primary default-incline">2</button>
+              <button type="button" class="btn btn-primary default-incline">4</button>
+              <button type="button" class="btn btn-primary default-incline">6</button>
+              <button type="button" class="btn btn-primary default-incline">8</button>
+            </div>
+            <div class="col">
+              <label>Speed</label>
+              <button type="button" class="btn btn-primary default-speed">2</button>
+              <button type="button" class="btn btn-primary default-speed">4</button>
+              <button type="button" class="btn btn-primary default-speed">6</button>
+              <button type="button" class="btn btn-primary default-speed">8</button>        
+            </div>
+          </div>
+          <div class="row">
+            <div class="col collapse" id="chartPanel">
+              <canvas id="myChart"></canvas>
+            </div>
+            <div class="col collapse" id="statusInfo">
+              <label>Status</label>
+              <div id="status"></div>
+              <label>Program Next Steps</label>
+              <div id="nextSteps"></div>
+              <label>Speed Info</label>
+              <div id="speedInfo"></div>
+              <label>Last Message</label>
+              <div id="lastMessage"></div>
+              <label>Messages Queue</label>
+              <div id="messageQueue"></div>
+            </div>      
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
