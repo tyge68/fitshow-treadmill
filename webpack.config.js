@@ -2,12 +2,13 @@ const path = require('path'),
       { CleanWebpackPlugin } = require('clean-webpack-plugin'),
       CopyPlugin = require('copy-webpack-plugin'),
       webpack = require('webpack'),
-      HtmlWebpackPlugin = require('html-webpack-plugin');
+      HtmlWebpackPlugin = require('html-webpack-plugin'),
+      HtmlWebpackInjectorPlugin = require('html-webpack-injector');
 
 module.exports = {
     mode: "production",
     entry: {
-        index: './src/index.js'
+        index_head: './src/index.js'
     },
     output: {
       filename: '[name].bundle.js',
@@ -40,7 +41,8 @@ module.exports = {
           }),
         new HtmlWebpackPlugin({
             template: 'src/index.html'
-        })
+        }),
+        new HtmlWebpackInjectorPlugin()
     ],
     module: {
         rules: [

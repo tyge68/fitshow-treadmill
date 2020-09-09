@@ -2,19 +2,17 @@ import BTDevice, { EVENT_RUNNING, EVENT_STOPPED } from './bt_device.js';
 import ProgramExecutor from './programExecutor.js';
 import { SAMPLE_PROGRAM1, SAMPLE_PROGRAM2 } from './default_programs.js';
 import { START_COMMAND, STOP_COMMAND, SPORT_DATA_COMMAND } from './bt_device.js';
-import moment from 'moment/min/moment.min.js';
+import moment from 'moment';
 
 "use strict";
 
 let btDevice = new BTDevice();
-let chartContext = $('#myChart')[0].getContext('2d');
 
 // Global settings for chart library
 Chart.defaults.global.animation.duration = 0;
 
 var selectedProgram = SAMPLE_PROGRAM1;
 var allPrograms = [ SAMPLE_PROGRAM1, SAMPLE_PROGRAM2 ];
-var programExecutor = new ProgramExecutor(btDevice, selectedProgram, chartContext);
 
 class Main {
 
@@ -26,7 +24,9 @@ class Main {
     this.initProgramList();
     btDevice.on(EVENT_RUNNING, (states) => { thisObj.onRunning(states) });
     btDevice.on(EVENT_STOPPED, (states) => { thisObj.onStopped(states) });
-    programExecutor.setOnStepChangedListener(() => { thisObj.onStepChanged() });
+    this.chartContext = $('#myChart')[0].getContext('2d');
+    this.programExecutor = new ProgramExecutor(btDevice, selectedProgram, this.chartContext);
+    this.programExecutor.setOnStepChangedListener(() => { thisObj.onStepChanged() });
   }
 
   onRunning(states) {
@@ -55,12 +55,12 @@ class Main {
     $("#totalDistance").html('N/A');
     $("#totalCalories").html('N/A');
 
-    programExecutor.reinitProgram();
+    this.programExecutor.reinitProgram();
   }
 
   onStepChanged() {
     var a = [];
-    programExecutor.getSteps().forEach(el => a.push("Speed:" + el[0] + "Incline:" + el[1]));
+    this.programExecutor.getSteps().forEach(el => a.push("Speed:" + el[0] + "Incline:" + el[1]));
     $("#nextSteps").html(a.join('<br>'));
   }
 
@@ -68,8 +68,8 @@ class Main {
     let selectedProgramIdx = $(event.target).data('program-index');
     selectedProgram = allPrograms[selectedProgramIdx];
     $("#btnGroupDrop1").html(selectedProgram.title);
-    programExecutor.stop();
-    programExecutor.setSelectedProgram(selectedProgram);
+    this.programExecutor.stop();
+    this.programExecutor.setSelectedProgram(selectedProgram);
   }
 
   initProgramList() {
@@ -111,6 +111,8 @@ class Main {
   }
 
   initTopNav() {
+    let thisObj = this;
+
     $('#connect').on('pointerup', function (event) {
       btDevice.initBTConnection(() => {
         $("#start").prop('disabled', false);
@@ -120,8 +122,8 @@ class Main {
 
     $("#program").on('pointerup', function (event) {
       console.log("Start Program");
-      if (!programExecutor.isExecuting() && btDevice.isRunning()) {
-        programExecutor.start();
+      if (!thisObj.programExecutor.isExecuting() && btDevice.isRunning()) {
+        thisObj.programExecutor.start();
       }
     });
 
