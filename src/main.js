@@ -1,5 +1,5 @@
 import BTDevice, { EVENT_RUNNING, EVENT_STOPPED } from './bt_device.js';
-import ProgramExecutor from './ProgramExecutor.js';
+import ProgramExecutor from './programExecutor.js';
 import { SAMPLE_PROGRAM1, SAMPLE_PROGRAM2 } from './default_programs.js';
 import { START_COMMAND, STOP_COMMAND, SPORT_DATA_COMMAND } from './bt_device.js';
 
