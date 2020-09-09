@@ -1,9 +1,8 @@
 const path = require('path'),
       { CleanWebpackPlugin } = require('clean-webpack-plugin'),
-      CopyPlugin = require('copy-webpack-plugin'),
       webpack = require('webpack'),
       HtmlWebpackPlugin = require('html-webpack-plugin'),
-      HtmlWebpackInjectorPlugin = require('html-webpack-injector');
+      HtmlWebpackInjectorPlugin = require('html-webpack-injector')
 
 module.exports = {
     mode: "production",
