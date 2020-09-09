@@ -2,11 +2,12 @@ import BTDevice, { EVENT_RUNNING, EVENT_STOPPED } from './bt_device.js';
 import ProgramExecutor from './programExecutor.js';
 import { SAMPLE_PROGRAM1, SAMPLE_PROGRAM2 } from './default_programs.js';
 import { START_COMMAND, STOP_COMMAND, SPORT_DATA_COMMAND } from './bt_device.js';
+import moment from 'moment/min/moment.min.js';
 
 "use strict";
 
 let btDevice = new BTDevice();
-let chartContext = document.getElementById('myChart').getContext('2d');
+let chartContext = $('#myChart')[0].getContext('2d');
 
 // Global settings for chart library
 Chart.defaults.global.animation.duration = 0;

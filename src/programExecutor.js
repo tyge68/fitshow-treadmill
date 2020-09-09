@@ -1,4 +1,8 @@
 import { STOP_COMMAND } from './bt_device.js';
+import moment from 'moment/min/moment.min.js';
+import momentDuration from 'moment-duration-format';
+
+momentDuration(moment);
 
 class ProgramExecutor {
 

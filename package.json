@@ -25,13 +25,24 @@
   },
   "homepage": "https://github.com/tyge68/fitshow-treadmill#readme",
   "dependencies": {
+    "bootstrap": "^4.5.2",
+    "chart.js": "^2.9.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
-    "morgan": "~1.9.1"
+    "jquery": "^3.5.1",
+    "moment": "^2.27.0",
+    "moment-duration-format": "^2.3.2",
+    "morgan": "~1.9.1",
+    "popper": "^1.0.1"
   },
   "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^6.1.0",
+    "css-loader": "^4.3.0",
+    "html-webpack-plugin": "^4.4.1",
+    "style-loader": "^1.2.1",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   }
