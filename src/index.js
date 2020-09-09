@@ -1,4 +1,4 @@
-import Main from './libs/main.js';
+import Main from './main.js';
 
 $( document ).ready(() => {
     new Main();
