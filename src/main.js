@@ -1,6 +1,6 @@
 import BTDevice, { EVENT_RUNNING, EVENT_STOPPED } from './bt_device.js';
 import ProgramExecutor from './programExecutor.js';
-import { SAMPLE_PROGRAM1, SAMPLE_PROGRAM2 } from './default_programs.js';
+import ALL_PROGRAMS from './default_programs.js';
 import { START_COMMAND, STOP_COMMAND, SPORT_DATA_COMMAND } from './bt_device.js';
 import moment from 'moment';
 
@@ -11,8 +11,8 @@ let btDevice = new BTDevice();
 // Global settings for chart library
 Chart.defaults.global.animation.duration = 0;
 
-var selectedProgram = SAMPLE_PROGRAM1;
-var allPrograms = [ SAMPLE_PROGRAM1, SAMPLE_PROGRAM2 ];
+var allPrograms = ALL_PROGRAMS;
+var selectedProgram = allPrograms[0];
 
 class Main {
 
