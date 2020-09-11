@@ -3,30 +3,42 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>FitShow Treadmill F31</title>
+  <script src="https://kit.fontawesome.com/b067ca1129.js" crossorigin="anonymous"></script>
+  <style>
+    .btn:focus{
+      box-shadow:none !important;
+    }
+    html {
+      background-color: #ffffff;
+    }
+  </style>
 </head>
 <body>
 
-  <div class="container">
+  <div id="main" class="container">
     <div class="row">
-      <div class="col">
+      <div class="col btn-group">
         <button id="connect" type="button" class="btn btn-primary active">Connect</button>
-        <button id="start" type="button" class="btn btn-primary" disabled>Start</button>
-        <button id="stop" type="button" class="btn btn-primary" disabled>Stop</button>
+        <button id="start" type="button" class="btn btn-primary" disabled><i class="fas fa-play-circle"></i></button>
+        <button id="stop" type="button" class="btn btn-primary" disabled><i class="far fa-stop-circle"></i></button>
         <div class="btn-group" role="group" aria-label="program related">
-          <button id="program" type="button" class="btn btn-primary" disabled>Start Program</button>       
+          <button id="program" type="button" class="btn btn-primary" disabled><i class="fas fa-running"></i></button>
           <div class="btn-group" role="group">
             <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
             <div id="programList" class="dropdown-menu" aria-labelledby="btnGroupDrop1">
             </div>
           </div>
         </div>
-        <button id="info" aria-expanded="false" aria-controls="statusInfo" type="button" data-toggle="collapse" data-target="#statusInfo" class="btn btn-primary" disabled>Status</button>  
-        <button id="chart" aria-expanded="false" aria-controls="chartPanel" type="button" data-toggle="collapse" data-target="#chartPanel" class="btn btn-primary">Chart</button>  
+        <button id="info" aria-expanded="false" aria-controls="statusInfo" type="button" data-toggle="collapse" data-target="#statusInfo" class="btn btn-primary" disabled><i class="fas fa-info-circle"></i></button>  
+        <button id="chart" aria-expanded="false" aria-controls="chartPanel" type="button" data-toggle="collapse" data-target="#chartPanel" class="btn btn-primary"><i class="fas fa-chart-bar"></i></button>  
+        <button id="fullscreen" type="button" class="btn btn-primary"><i class="fas fa-expand-arrows-alt"></i></button>
+        <button id="exit-fullscreen" type="button" class="btn btn-primary d-none"><i class="fas fa-compress"></i></button>
+        </button>  
       </div>
     </div>
     <div class="row">
       <div class="col " id="connectedPanel">
-        <table class="table">
+        <table class="table collapse" id="statusInfo">
           <tr>
             <td>Speed (km/h)</td>
             <td>Incline (%)</td>
@@ -50,15 +62,15 @@
         </div>
         <div class="container">
           <div class="row">
-            <div class="col">
-              <label>Incline</label>
+            <div class="col btn-group">
+              <div class="btn btn-secondary"><i class="fas fa-mountain"></i></div>
               <button type="button" class="btn btn-primary default-incline">2</button>
               <button type="button" class="btn btn-primary default-incline">4</button>
               <button type="button" class="btn btn-primary default-incline">6</button>
               <button type="button" class="btn btn-primary default-incline">8</button>
             </div>
-            <div class="col">
-              <label>Speed</label>
+            <div class="col btn-group">
+              <div class="btn btn-secondary"><i class="fas fa-tachometer-alt"></i></div>
               <button type="button" class="btn btn-primary default-speed">2</button>
               <button type="button" class="btn btn-primary default-speed">4</button>
               <button type="button" class="btn btn-primary default-speed">6</button>
@@ -69,18 +81,6 @@
             <div class="col collapse" id="chartPanel">
               <canvas id="myChart"></canvas>
             </div>
-            <div class="col collapse" id="statusInfo">
-              <label>Status</label>
-              <div id="status"></div>
-              <label>Program Next Steps</label>
-              <div id="nextSteps"></div>
-              <label>Speed Info</label>
-              <div id="speedInfo"></div>
-              <label>Last Message</label>
-              <div id="lastMessage"></div>
-              <label>Messages Queue</label>
-              <div id="messageQueue"></div>
-            </div>      
           </div>
         </div>
       </div>

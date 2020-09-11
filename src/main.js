@@ -138,6 +138,18 @@ class Main {
       btDevice.addMessage(STOP_COMMAND);
       btDevice.addMessage(SPORT_DATA_COMMAND);
     });
+
+    $("#fullscreen").on('pointerup', function (event) {
+      $("body")[0].requestFullscreen();
+      $("#exit-fullscreen").toggleClass('d-none');
+      $("#fullscreen").toggleClass('d-none');
+    });
+
+    $("#exit-fullscreen").on('pointerup', function (event) {
+      document.exitFullscreen();
+      $("#exit-fullscreen").toggleClass('d-none');
+      $("#fullscreen").toggleClass('d-none');
+    });
   }
 }
 
