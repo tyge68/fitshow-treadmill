@@ -11,7 +11,18 @@ let btDevice = new BTDevice();
 // Global settings for chart library
 Chart.defaults.global.animation.duration = 0;
 
-var allPrograms = ALL_PROGRAMS;
+let localStorage = window.localStorage;
+let storedPrograms = localStorage.getItem('trainingPrograms');
+let allPrograms;
+
+if (!storedPrograms) {
+  // initialize with a deep copy of the default programs
+  allPrograms = JSON.parse(JSON.stringify(ALL_PROGRAMS));
+  localStorage.setItem('trainingPrograms', JSON.stringify(allPrograms));
+} else {
+  allPrograms = JSON.parse(storedPrograms);
+}
+
 var selectedProgram = allPrograms[0];
 
 class Main {
