@@ -24,7 +24,7 @@ class Main {
     this.initProgramList();
     btDevice.on(EVENT_RUNNING, (states) => { thisObj.onRunning(states) });
     btDevice.on(EVENT_STOPPED, (states) => { thisObj.onStopped(states) });
-    this.chartContext = $('#myChart')[0].getContext('2d');
+    this.chartContext = $('#programChart')[0].getContext('2d');
     this.programExecutor = new ProgramExecutor(btDevice, selectedProgram, this.chartContext);
     this.programExecutor.setOnStepChangedListener(() => { thisObj.onStepChanged() });
   }
@@ -117,6 +117,8 @@ class Main {
       btDevice.initBTConnection(() => {
         $("#start").prop('disabled', false);
         $("#info").prop('disabled', false);
+        $("#connection").toggleClass('d-none');
+        $("#main").toggleClass('d-none');
       });
     });
 
@@ -150,6 +152,8 @@ class Main {
       $("#exit-fullscreen").toggleClass('d-none');
       $("#fullscreen").toggleClass('d-none');
     });
+
+    $('[data-toggle="tooltip"]').tooltip();
   }
 }
 

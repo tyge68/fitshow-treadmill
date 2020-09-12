@@ -14,11 +14,18 @@
   </style>
 </head>
 <body>
-
-  <div id="main" class="container">
+  <div id="connection" class="jumbotron">
+    <h1 class="display-4">FitShow Treamill F31</h1>
+    <p class="lead">This is a simple application to control your treadmill F31, and run with your favorite training programs.</p>
+    <hr class="my-4">
+    <p>It uses Bluetooth Low Energy to access your device.</p>
+    <p class="lead">
+      <button id="connect" type="button" class="btn btn-primary active">Connect</button>
+    </p>
+  </div>
+  <div id="main" class="container d-none">
     <div class="row">
       <div class="col btn-group">
-        <button id="connect" type="button" class="btn btn-primary active">Connect</button>
         <button id="start" type="button" class="btn btn-primary" disabled><i class="fas fa-play-circle"></i></button>
         <button id="stop" type="button" class="btn btn-primary" disabled><i class="far fa-stop-circle"></i></button>
         <div class="btn-group" role="group" aria-label="program related">
@@ -54,23 +61,23 @@
             <td id="totalCalories"></td>
           </tr>
         </table>
-        <div class="progress my-3">
+        <div class="progress my-3" data-toggle="tooltip" data-placement="top" title="Total Remaining Time">
           <div id="programProgress" class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
-        <div class="progress my-3">
+        <div class="progress my-3" data-toggle="tooltip" data-placement="bottom" title="Step Remaining Time">
           <div id="stepProgress" class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         <div class="container">
           <div class="row">
             <div class="col btn-group">
-              <div class="btn btn-secondary"><i class="fas fa-mountain"></i></div>
+              <div class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Incline Level"><i class="fas fa-mountain"></i></div>
               <button type="button" class="btn btn-primary default-incline">2</button>
               <button type="button" class="btn btn-primary default-incline">4</button>
               <button type="button" class="btn btn-primary default-incline">6</button>
               <button type="button" class="btn btn-primary default-incline">8</button>
             </div>
             <div class="col btn-group">
-              <div class="btn btn-secondary"><i class="fas fa-tachometer-alt"></i></div>
+              <div class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Speed Level"><i class="fas fa-tachometer-alt"></i></div>
               <button type="button" class="btn btn-primary default-speed">2</button>
               <button type="button" class="btn btn-primary default-speed">4</button>
               <button type="button" class="btn btn-primary default-speed">6</button>
@@ -79,7 +86,7 @@
           </div>
           <div class="row">
             <div class="col collapse" id="chartPanel">
-              <canvas id="myChart"></canvas>
+              <canvas id="programChart"></canvas>
             </div>
           </div>
         </div>
