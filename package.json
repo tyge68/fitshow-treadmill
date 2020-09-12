@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "nodemon --watch src --ext js,css,html --exec 'npm run build & npm run start'",
     "build": "webpack"
   },
   "repository": {
