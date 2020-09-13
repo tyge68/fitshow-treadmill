@@ -1,6 +1,6 @@
 <template>
   <div id="connection" class="jumbotron">
-    <h1 class="display-4">FitShow Treamill F31</h1>
+    <h1 class="display-4">FitShow Treadmill F31</h1>
     <p class="lead">This is a simple application to control your treadmill F31, and run with your favorite training programs.</p>
     <hr class="my-4">
     <p>It uses Bluetooth Low Energy to access your device.</p>
