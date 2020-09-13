@@ -121,7 +121,7 @@ class ProgramExecutorImpl {
     start() {
         let thisObj = this;
         this.execute(); // now then with interval
-        this.programInterval = setInterval(() => { thisObj.execute() }, this.selectedProgram.stepDuration * 1000);
+        this.programInterval = setInterval(() => { thisObj.execute() }, this.currentStepDuration * 1000);
         this.progressInterval = setInterval(() => { thisObj.updateProgress(); }, 1000);
     }
 
