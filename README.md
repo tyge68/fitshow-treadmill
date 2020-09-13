@@ -1,17 +1,24 @@
-## FitShow Treadmill F31
+# fitshow-f31-vue
 
-Connect to your F31 treadmill and run your favorite program
-
-## Usage
-
-Start a server, for example using following npm tool
-
+## Project setup
 ```
-npx http-server
+npm install
 ```
 
-Open the page http://localhost:8080 in your browser
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
 
-## What's next
-- Eventually use better tooling to write the code.
-- Implement a program editor.
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

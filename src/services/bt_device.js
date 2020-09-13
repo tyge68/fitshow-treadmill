@@ -1,4 +1,5 @@
 "use strict";
+import { EventBus } from '../event-bus';
 
 const S_SERIAL_PORT = '0000fff0-0000-1000-8000-00805f9b34fb';
 const C_SERIAL_PORT_READ = '0000fff1-0000-1000-8000-00805f9b34fb';
@@ -20,7 +21,7 @@ const MESAGE_ENDING = [3];
 
 let s_serialPort, c_serialPortRead, c_serialPortWrite;
 
-class BTFitShowDevice {
+class BTServiceImpl {
 
     constructor() {
         this._isRunning = false;
@@ -62,19 +63,6 @@ class BTFitShowDevice {
         return d;
     }
 
-    on(eventType, callback) {
-        if (eventType === EVENT_STARTING) {
-            this.onStarting = callback;
-        } else if (eventType === EVENT_STOPPED) {
-            this.onStopped = callback;
-        } else if (eventType === EVENT_RUNNING) {
-            this.onRunning = callback;
-        } else {
-            console.log("invalid eventType, only", EVENT_STARTING, EVENT_RUNNING, EVENT_STOPPED, 'are allowed');
-        }
-    }
-
-
     handleNotifications(event) {
         let value = event.target.value;
         let prevStatus = this.states.status;
@@ -88,8 +76,9 @@ class BTFitShowDevice {
                     let maxSpeed = value.getUint8(3);
                     let minSpeed = value.getUint8(4);
                     let unitSpeed = value.getUint8(5);
-                } else if (this.lastMessage === INCLINE_INFO_COMMAND) {
-                } else if (this.lastMessage === TOTAL_INFO_COMMAND) {
+                    EventBus.$emit('btSpeedInfo', maxSpeed, minSpeed, unitSpeed);
+                /* } else if (this.lastMessage === INCLINE_INFO_COMMAND) {
+                } else if (this.lastMessage === TOTAL_INFO_COMMAND) { */
                 } else if (this.lastMessage === STATUS_COMMAND) {
                     if (valueLength === 5 && value.getUint8(2) === 0 && value.getUint8(3) === 81) {
                         this._isRunning = false;
@@ -97,15 +86,17 @@ class BTFitShowDevice {
                         this.states.currentSpeed = 0;
                         this.states.currentIncline = 0;
 
-                        if (this.onStopped && prevStatus !== this.states.status) {
-                            this.onStopped(this.states);
+                        if (prevStatus !== this.states.status) {
+                            EventBus.$emit('btStopped', this.states);
+                            console.log("btStopped emit");
                         }
                     } else if (valueLength > 5 && valueLength < 17) {
                         this.states.status = 'Starting';
                         this.states.currentSpeed = 0;
                         this.states.currentIncline = 0;
-                        if (this.onStarting && prevStatus !== this.states.status) {
-                            this.onStarting(this.states);
+                        if (prevStatus !== this.states.status) {
+                            EventBus.$emit('btStarting', this.states);
+                            console.log("btStarting emit");
                         }
                         //statusDiv.innerHTML = "Starting";
                     } else if (valueLength === 17) {
@@ -115,9 +106,8 @@ class BTFitShowDevice {
                         this.states.currentSpeed = value.getUint8(3) / 10;
                         this.states.currentIncline = value.getUint8(4);
 
-                        if (this.onRunning) {
-                            this.onRunning(this.states);
-                        }
+                        EventBus.$emit('btRunning', this.states);
+                        console.log("btRunning emit");
                     }
                 }
                 this.lastMessage = null;
@@ -200,7 +190,7 @@ class BTFitShowDevice {
         this.messageQueue.push(msg);
     }
 
-    initBTConnection(callback) {
+    initBTConnection() {
         let thisObj = this;
         navigator.bluetooth.requestDevice({
             filters: [
@@ -216,7 +206,7 @@ class BTFitShowDevice {
             })
             .then(characteristic => {
                 c_serialPortRead = characteristic;
-                return c_serialPortRead.startNotifications().then(_ => {
+                return c_serialPortRead.startNotifications().then(() => {
                     console.log('> Notifications started for c_serialPortRead');
                     c_serialPortRead.addEventListener('characteristicvaluechanged',(e) =>
                     { thisObj.handleNotifications(e) });
@@ -231,12 +221,11 @@ class BTFitShowDevice {
                 thisObj.addMessage(INCLINE_INFO_COMMAND);
                 thisObj.addMessage(TOTAL_INFO_COMMAND);
                 setInterval(() => { thisObj.intervalHandler() }, 200);
-                if (callback) {
-                    callback();
-                }
+                EventBus.$emit("btConnected");
+                console.log("btConnected emit");
             })
             .catch(error => { console.log(error); });
     }
 }
 
-export default BTFitShowDevice;
+export const BTService = new BTServiceImpl();
