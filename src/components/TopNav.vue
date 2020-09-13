@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import { ProgramExecutor } from '../services/programExecutor';
+import { ProgramExecutor } from '../services/ProgramExecutor';
 import { EventBus } from '../event-bus';
-import { BTService, START_COMMAND, STOP_COMMAND } from '../services/bt_device';
+import { BTService, START_COMMAND, STOP_COMMAND } from '../services/BTService';
 
 import moment from 'moment';
 

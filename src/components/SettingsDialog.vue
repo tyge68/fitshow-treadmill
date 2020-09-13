@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { ProgramExecutor } from '../services/programExecutor';
+import { ProgramExecutor } from '../services/ProgramExecutor';
 
 export default {
   name: 'SettingsDialog',

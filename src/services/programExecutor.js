@@ -1,5 +1,5 @@
 import { EventBus } from '../event-bus';
-import { BTService, STOP_COMMAND } from './bt_device';
+import { BTService, STOP_COMMAND } from './BTService';
 import { ALL_PROGRAMS } from '../constants/default_programs';
 import { DEFAULT_SETTINGS } from '../constants/default_settings';
 
@@ -8,7 +8,7 @@ import momentDuration from 'moment-duration-format';
 
 momentDuration(moment);
 
-class TrainingProgramExecutor {
+class ProgramExecutorImpl {
 
     constructor() {
         this.loadPrograms();
@@ -173,4 +173,4 @@ class TrainingProgramExecutor {
     
 }
 
-export const ProgramExecutor = new TrainingProgramExecutor();
+export const ProgramExecutor = new ProgramExecutorImpl();

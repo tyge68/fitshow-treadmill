@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { ProgramExecutor } from '../services/programExecutor';
+import { ProgramExecutor } from '../services/ProgramExecutor';
 import { EventBus } from '../event-bus';
 
 // set defaults for Chart
