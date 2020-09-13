@@ -31,7 +31,7 @@ class ProgramExecutorImpl {
         console.log("scale for time");       
         let targetTotalDurationSeconds = this.getSettings().timelimit * 60;
         let targetStepDurationSeconds = targetTotalDurationSeconds / this.getSteps().length;
-        this.setStepDuration(Math.round(targetStepDurationSeconds));
+        this.setStepDuration(targetStepDurationSeconds);
     }
 
     setStepDuration(newDuration) {
