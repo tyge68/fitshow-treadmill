@@ -4,7 +4,7 @@
       <button @click="stopTreadmill" id="stop" type="button" class="btn btn-primary" disabled><i class="far fa-stop-circle"></i></button>
       <div class="btn-group" role="group" aria-label="program related">
         <button @click="startProgram" id="program" type="button" class="btn btn-primary" disabled><i class="fas fa-running"></i></button>
-        <div class="btn-group" role="group">
+        <div id="listProgram" class="btn-group" role="group">
           <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
           <div id="programList" class="dropdown-menu" aria-labelledby="btnGroupDrop1">
             <a @click="selectProgram" v-for="(item, index) in programs" v-bind:key="item.title" class="dropdown-item" href="#" v-bind:data-program-index="index">{{ item.title }}</a>
@@ -12,8 +12,7 @@
         </div>
         <button id="editProgram" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editSettingsDialog"><i class="fas fa-edit"></i></button>
       </div>
-      <button id="info" aria-expanded="false" aria-controls="statusInfo" type="button" data-toggle="collapse" data-target="#statusInfo" class="btn btn-primary" disabled><i class="fas fa-info-circle"></i></button>  
-      <button id="chart" aria-expanded="false" aria-controls="chartPanel" type="button" data-toggle="collapse" data-target="#chartPanel" class="btn btn-primary"><i class="fas fa-chart-bar"></i></button>  
+      <button id="info" aria-expanded="false" aria-controls="statusInfoPanel chartPanel" type="button" data-toggle="collapse" data-target=".multi-collapse" class="btn btn-primary"><i class="fas fa-info-circle"></i> / <i class="fas fa-chart-bar"></i></button>  
       <button @click="enterFullscreen" id="fullscreen" type="button" class="btn btn-primary"><i class="fas fa-expand-arrows-alt"></i></button>
       <button @click="exitFullscreen" id="exit-fullscreen" type="button" class="btn btn-primary d-none"><i class="fas fa-compress"></i></button>
     </div>
@@ -30,11 +29,11 @@ let $ = window.jQuery;
 
 function onRunning(states) {
     let value = states.value;
-    $("#status").html("Running");
     $("#start").prop('disabled', true);
     $("#stop").prop('disabled', false);
-    $("#program").prop('disabled', false);
-    $("#btnGroupDrop1").prop('disabled', true);
+    $("#inclinePanel button").prop('disabled', false);
+    $("#speedPanel button").prop('disabled', false);
+    $("#status").html("Running");
     $("#speed").html(states.currentSpeed);
     $("#incline").html(states.currentIncline);
     $("#totalTime").html(moment.duration(value.getUint8(5) + value.getUint8(6) * 256, 'seconds').format('H:mm:ss'));
@@ -44,19 +43,23 @@ function onRunning(states) {
 
 function onStarting(states) {
     console.log("starting", states);
+    $("#listProgram").addClass("d-none");
+    $("#editProgram").addClass("d-none");
 }
 
 function onStopped() {
     $("#status").html("Stopped");
     $("#start").prop('disabled', false);
     $("#stop").prop('disabled', true);
-    $("#program").prop('disabled', true);
-    $("#btnGroupDrop1").prop('disabled', false);
+    $("#listProgram").removeClass("d-none");
+    $("#editProgram").removeClass("d-none");
     $("#speed").html(0);
     $("#incline").html(0);
     $("#totalTime").html('N/A');
     $("#totalDistance").html('N/A');
     $("#totalCalories").html('N/A');
+    $("#inclinePanel button").prop('disabled', true);
+    $("#speedPanel button").prop('disabled', true);
 
     ProgramExecutor.reinitProgram();
   }
@@ -84,13 +87,19 @@ export default {
   methods: {
     startTreadmill() {
       BTService.addMessage(START_COMMAND);
+      $("#start").prop('disabled', true);
+      $("#program").prop('disabled', false);
+      $("#stop").prop('disabled', false);
     },
     stopTreadmill() {
       BTService.addMessage(STOP_COMMAND);
+      $("#start").prop('disabled', false);
+      $("#stop").prop('disabled', true);
     },
     startProgram() {
       if (!ProgramExecutor.isExecuting() && BTService.isRunning()) {
         ProgramExecutor.start();
+        $("#program").prop('disabled', true);
       }
     },
     selectProgram(event) {

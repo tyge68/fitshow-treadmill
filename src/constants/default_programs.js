@@ -31,20 +31,8 @@ const MOUNTAIN_HELL = {
     ]
   };
 
-const MOUNTAIN_HELL_EXTENDED = {
-  title: 'Mountain Hell Extended',
-  stepDuration: 180,
-  steps: [
-    [2, 2], // warm up
-    [4, 4], [6, 4], [8, 4], [4, 4], [6, 4], [8, 4], [10, 4],
-    [4, 6], [6, 6], [8, 6], [4, 6], [6, 6], [8, 6], [10, 6],
-    [4, 2], [2, 0] // calm down
-  ]
-};
-
 export const ALL_PROGRAMS = [
   CHAOTIC_HILLS,
   EASY_PIZZY,
-  MOUNTAIN_HELL,
-  MOUNTAIN_HELL_EXTENDED
+  MOUNTAIN_HELL
 ];

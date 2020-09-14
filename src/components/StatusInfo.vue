@@ -1,5 +1,5 @@
 <template>
-  <table class="table collapse" id="statusInfo">
+  <table class="table">
     <tr>
       <td>Speed (km/h)</td>
       <td>Incline (%)</td>
