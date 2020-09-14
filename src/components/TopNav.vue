@@ -1,5 +1,5 @@
 <template>
-    <div class="container btn-group">
+    <div class="container-fluid btn-group">
       <button @click="startTreadmill" id="start" type="button" class="btn btn-primary" disabled><i class="fas fa-play-circle"></i></button>
       <button @click="stopTreadmill" id="stop" type="button" class="btn btn-primary" disabled><i class="far fa-stop-circle"></i></button>
       <div class="btn-group" role="group" aria-label="program related">

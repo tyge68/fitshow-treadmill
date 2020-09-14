@@ -1,5 +1,5 @@
 <template>
-  <div id="main" class="container d-none">
+  <div id="main" class="d-none">
     <div class="row">
       <div class="col">
           <TopNav />
@@ -11,10 +11,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col" id="inclinePanel">
-        <CommandInclinePanel />
-      </div>
-      <div class="col-8">
+      <div class="col">
         <div class="collapse multi-collapse" id="chartPanel">
           <Chart />
         </div>
@@ -22,7 +19,14 @@
           <StatusInfo />
         </div>
       </div>
-      <div class="col" id="speedPanel">
+    </div>
+    <div class="row">
+      <div class="col px-0" id="inclinePanel">
+        <CommandInclinePanel />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col px-0" id="speedPanel">
         <CommandSpeedPanel />
       </div>
     </div>

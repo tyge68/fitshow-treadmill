@@ -123,6 +123,7 @@ class ProgramExecutorImpl {
         this.execute(); // now then with interval
         this.programInterval = setInterval(() => { thisObj.execute() }, this.currentStepDuration * 1000);
         this.progressInterval = setInterval(() => { thisObj.updateProgress(); }, 1000);
+        EventBus.$emit('trainingProgramStarted');
     }
 
     stop() {
@@ -131,6 +132,7 @@ class ProgramExecutorImpl {
         clearInterval(this.progressInterval);
         this.programInterval = null;
         this.progressInterval = null;
+        EventBus.$emit('trainingProgramStopped');
     }
 
     getSteps() {

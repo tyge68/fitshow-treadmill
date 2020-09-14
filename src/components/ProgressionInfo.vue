@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div id="progressionPanel" class="d-none">
     <div class="progress my-3" data-toggle="tooltip" data-placement="top" title="Total Remaining Time">
       <div id="programProgress" class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
@@ -22,6 +22,29 @@ EventBus.$on('trainingProgression', (data) => {
       .attr('aria-valuenow', data.step.percent)
       .html(data.step.remaining);
 });
+
+EventBus.$on('btStopped', () => {
+  let progressionPanel = $('#progressionPanel');
+  if (!progressionPanel.hasClass('d-none')) {
+    progressionPanel.addClass('d-none');
+  }
+  $('#programProgress')
+      .css('width', '0%')
+      .attr('aria-valuenow', 0)
+      .html('');
+  $('#stepProgress')
+      .css('width', '0%')
+      .attr('aria-valuenow', 0)
+      .html('');
+});
+
+EventBus.$on('trainingProgramStarted', () => {
+  let progressionPanel = $('#progressionPanel');
+  if (progressionPanel.hasClass('d-none')) {
+    progressionPanel.removeClass('d-none');
+  }
+});
+
 
 export default {
   name: 'ProgressionInfo'

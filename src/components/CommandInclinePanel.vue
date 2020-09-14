@@ -1,10 +1,8 @@
 <template>
-<div class="container">
-  <div class="col btn-group-vertical">
+  <div class="col btn-group">
     <div class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Incline Level"><i class="fas fa-mountain"></i></div>
     <button v-for="n in 6" v-bind:key="n" @click="changeIncline" type="button" class="btn btn-primary" disabled>{{ n * 2 }}</button>
   </div>
-</div>
 </template>
 
 <script>

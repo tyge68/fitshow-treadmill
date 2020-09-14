@@ -1,10 +1,8 @@
 <template>
-<div class="container">
-  <div class="col btn-group-vertical">
+  <div class="col btn-group">
     <div class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Speed Level"><i class="fas fa-tachometer-alt"></i></div>
     <button v-for="n in 6" v-bind:key="n" @click="changeSpeed" type="button" class="btn btn-primary" disabled>{{ n * 2 }}</button>
   </div>
-</div>
 </template>
 
 <script>
