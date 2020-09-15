@@ -128,6 +128,8 @@ class ProgramExecutorImpl {
 
     start() {
         let thisObj = this;
+        this.programStartTime = Date.now();
+        this.currentStepStartTime = Date.now();
         this.execute(); // now then with interval
         this.programInterval = setInterval(() => { thisObj.execute() }, this.currentStepDuration * 1000);
         this.progressInterval = setInterval(() => { thisObj.updateProgress(); }, 1000);
@@ -163,11 +165,9 @@ class ProgramExecutorImpl {
         this.selectedProgram = this.selectedProgram || this.getAllPrograms()[0];        
 
         this.programQueue = [];
-        this.programStartTime = Date.now();
 
         this.currentSpeed = 0;
         this.currentIncline = 0;
-        this.currentStepStartTime = Date.now();
         this.currentStep = 0;
 
         let programQueue = this.programQueue;

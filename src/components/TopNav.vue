@@ -29,6 +29,8 @@ let $ = window.jQuery;
 
 function onRunning(states) {
     let value = states.value;
+    let totalDistance = value.getUint8(7) + value.getUint8(8) * 256;
+    let totalTime = value.getUint8(5) + value.getUint8(6) * 256;
     $("#start").prop('disabled', true);
     $("#stop").prop('disabled', false);
     $("#inclinePanel button").prop('disabled', false);
@@ -36,8 +38,9 @@ function onRunning(states) {
     $("#status").html("Running");
     $("#speed").html(states.currentSpeed);
     $("#incline").html(states.currentIncline);
-    $("#totalTime").html(moment.duration(value.getUint8(5) + value.getUint8(6) * 256, 'seconds').format('H:mm:ss'));
-    $("#totalDistance").html(value.getUint8(7) + value.getUint8(8) * 256);
+    $("#avgSpeed").html(window.math.round(totalDistance / totalTime * 3.6, 1));
+    $("#totalTime").html(moment.duration(totalTime, 'seconds').format('H:mm:ss'));
+    $("#totalDistance").html(totalDistance);
     $("#totalCalories").html((value.getUint8(9) + value.getUint8(10) * 256) / 10);
   }
 
@@ -56,6 +59,7 @@ function onStopped() {
     $("#speed").html(0);
     $("#incline").html(0);
     $("#totalTime").html('N/A');
+    $("#avgSpeed").html('N/A');
     $("#totalDistance").html('N/A');
     $("#totalCalories").html('N/A');
     $("#inclinePanel button").prop('disabled', true);
