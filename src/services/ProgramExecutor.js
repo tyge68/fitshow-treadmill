@@ -28,19 +28,11 @@ class ProgramExecutorImpl {
         let targetDistance = this.getSettings().distancelimit;
         let speedWeigths = math.column(this.getSteps(), 0);
         let speedScaledWeigths = math.divide(speedWeigths, 3600);
-        let targetDuration = 100, increment = 200, error, iter = 0, maxIter = 500;
-        do {
-            let distanceForDuration = math.chain(speedScaledWeigths).multiply(targetDuration).sum().done();
-            error = distanceForDuration - targetDistance;
-            increment = Math.max(1, increment * 0.9);
-            if (error > 0) {
-                targetDuration -= increment;
-            } else if (error < 0) {
-                targetDuration += increment;
-            } else {
-                break;
-            }
-        } while (Math.abs(error) > 0.01 && iter++ < maxIter) ;
+        let sumSpeedScaled = math.sum(speedScaledWeigths);
+        console.log("sumSpeedScaled", sumSpeedScaled);
+        let targetDuration = targetDistance / sumSpeedScaled;
+        console.log("optimized targetDuration = ", targetDuration);
+        console.log("totalDuration = ", moment.duration(targetDuration * speedWeigths.length, 'seconds').format('H:mm:ss'));
         this.setStepDuration(math.round(targetDuration, 3));
     }
 
