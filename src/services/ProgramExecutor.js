@@ -24,11 +24,27 @@ class ProgramExecutorImpl {
     }
 
     scaleForDistance() {
-        console.log("scale for distance not implemented");       
+        let math = window.math;
+        let targetDistance = this.getSettings().distancelimit;
+        let speedWeigths = math.column(this.getSteps(), 0);
+        let speedScaledWeigths = math.divide(speedWeigths, 3600);
+        let targetDuration = 100, increment = 200, error, iter = 0, maxIter = 500;
+        do {
+            let distanceForDuration = math.chain(speedScaledWeigths).multiply(targetDuration).sum().done();
+            error = distanceForDuration - targetDistance;
+            increment = Math.max(1, increment * 0.9);
+            if (error > 0) {
+                targetDuration -= increment;
+            } else if (error < 0) {
+                targetDuration += increment;
+            } else {
+                break;
+            }
+        } while (Math.abs(error) > 0.01 && iter++ < maxIter) ;
+        this.setStepDuration(math.round(targetDuration, 3));
     }
 
     scaleForTime() {
-        console.log("scale for time");       
         let targetTotalDurationSeconds = this.getSettings().timelimit * 60;
         let targetStepDurationSeconds = targetTotalDurationSeconds / this.getSteps().length;
         this.setStepDuration(targetStepDurationSeconds);

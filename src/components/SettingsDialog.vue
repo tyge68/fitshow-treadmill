@@ -75,6 +75,7 @@ export default {
   methods: {
     saveChanges() {
       ProgramExecutor.saveSettings(this.settings);
+      ProgramExecutor.reinitProgram();
     }
   }
 }
