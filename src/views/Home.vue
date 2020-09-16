@@ -21,13 +21,13 @@
       </div>
     </div>
     <div class="row">
-      <div class="col px-0" id="inclinePanel">
-        <CommandInclinePanel />
+      <div class="col px-0">
+        <CommandPanel title="Incline Level" iconName="fa-mountain" commandType="incline" />
       </div>
     </div>
     <div class="row">
-      <div class="col px-0" id="speedPanel">
-        <CommandSpeedPanel />
+      <div class="col px-0">
+        <CommandPanel title="Speed Level" iconName="fa-tachometer-alt" commandType="speed" />
       </div>
     </div>
     <SettingsDialog />
@@ -38,8 +38,7 @@
 import TopNav from '../components/TopNav.vue'
 import StatusInfo from '../components/StatusInfo.vue'
 import ProgressionInfo from '../components/ProgressionInfo.vue'
-import CommandInclinePanel from '../components/CommandInclinePanel.vue'
-import CommandSpeedPanel from '../components/CommandSpeedPanel.vue'
+import CommandPanel from '../components/CommandPanel.vue'
 import Chart from '../components/Chart.vue'
 import SettingsDialog from '../components/SettingsDialog.vue'
 import { BTService } from '../services/BTService';
@@ -50,8 +49,7 @@ export default {
       TopNav,
       StatusInfo,
       ProgressionInfo,
-      CommandInclinePanel,
-      CommandSpeedPanel,
+      CommandPanel,
       Chart,
       SettingsDialog
   },
