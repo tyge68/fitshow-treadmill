@@ -1,20 +1,12 @@
 <template>
   <div id="app">
-    <Connection />
-    <Main />
+    <router-view />
   </div>
 </template>
 
 <script>
-import Connection from './components/Connection.vue';
-import Main from './components/Main.vue';
-
 export default {
-  name: 'App',
-  components: {
-    Connection,
-    Main
-  }
+  name: 'App'
 }
 </script>
 

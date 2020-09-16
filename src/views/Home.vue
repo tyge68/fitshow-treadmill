@@ -1,5 +1,5 @@
 <template>
-  <div :class="connected ? '':'d-none'">
+  <div class="container-fluid">
     <div class="row">
       <div class="col">
           <TopNav />
@@ -35,22 +35,17 @@
 </template>
 
 <script>
-import TopNav from './TopNav.vue'
-import StatusInfo from './StatusInfo.vue'
-import ProgressionInfo from './ProgressionInfo.vue'
-import CommandInclinePanel from './CommandInclinePanel.vue'
-import CommandSpeedPanel from './CommandSpeedPanel.vue'
-import Chart from './Chart.vue'
-import SettingsDialog from './SettingsDialog.vue'
-import { EventBus } from '../event-bus'
+import TopNav from '../components/TopNav.vue'
+import StatusInfo from '../components/StatusInfo.vue'
+import ProgressionInfo from '../components/ProgressionInfo.vue'
+import CommandInclinePanel from '../components/CommandInclinePanel.vue'
+import CommandSpeedPanel from '../components/CommandSpeedPanel.vue'
+import Chart from '../components/Chart.vue'
+import SettingsDialog from '../components/SettingsDialog.vue'
+import { BTService } from '../services/BTService';
 
 export default {
-  name: 'Main',
-  data() {
-    return {
-      connected: false
-    }
-  },
+  name: 'Home',
   components: {
       TopNav,
       StatusInfo,
@@ -61,12 +56,10 @@ export default {
       SettingsDialog
   },
   created() {
-    let thisObj = this;
-    EventBus.$once('btConnected', () => {
-      thisObj.connected = true;
-    });
+    if (!BTService.isConnected()) {
+      this.$router.push({ path: "/" });
+    }
   }
-
 }
 </script>
 

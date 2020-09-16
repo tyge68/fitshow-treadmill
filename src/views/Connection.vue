@@ -1,5 +1,5 @@
 <template>
-  <div class="jumbotron" :class="connected ? 'd-none' : ''">
+  <div class="jumbotron">
     <h1 class="display-4">Sportstech Treadmill F31</h1>
     <p class="lead">This is a simple application to control your treadmill F31, and run with your favorite training programs.</p>
     <img class="img-fluid img-thumbnail" width="40%" height="auto" src="../assets/f31.jpg" />
@@ -17,11 +17,6 @@ import { BTService } from '../services/BTService';
 
 export default {
   name: 'Connection',
-  data() {
-    return {
-      connected: false
-    }
-  },
   methods: {
     btConnect() {
       BTService.initBTConnection();
@@ -30,7 +25,7 @@ export default {
   created() {
     let thisObj = this;
     EventBus.$once('btConnected', () => {
-      thisObj.connected = true;
+      thisObj.$router.push({ path: '/home' });
     });
   }
 }

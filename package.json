@@ -12,7 +12,8 @@
     "mathjs": "^7.2.0",
     "moment": "^2.27.0",
     "moment-duration-format": "^2.3.2",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-router": "^3.4.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

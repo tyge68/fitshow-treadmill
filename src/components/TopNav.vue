@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid btn-group" :class="connected ? '':'d-none'">
+    <div class="container-fluid btn-group">
       <button type="button" class="btn btn-secondary" :class="started ? 'd-none':''" data-toggle="modal" data-target="#editSettingsDialog"><i class="fas fa-cogs"></i></button>
       <button @click="startTreadmill" type="button" class="btn btn-primary" :disabled="started"><i class="fas fa-play-circle"></i></button>
       <button @click="stopTreadmill" type="button" class="btn btn-primary" :disabled="!started"><i class="far fa-stop-circle"></i></button>
@@ -21,7 +21,6 @@ export default {
     return {
       started: false,
       running: false,
-      connected: false,
       fullscreen: false
     };
   },
@@ -55,9 +54,6 @@ export default {
     EventBus.$on('btStopped', () => {
       thisObj.running = false;
       thisObj.started = false;
-    });
-    EventBus.$on('btConnected', () => {
-      thisObj.connected = true;
     });
   }
 }

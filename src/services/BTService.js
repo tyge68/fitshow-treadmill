@@ -29,6 +29,7 @@ class BTServiceImpl {
         this.status = 'Undefined';
         this.messageQueue = [];
         this.states = {};
+        this.connected = false;
     }
 
     convertArray(value) {
@@ -182,6 +183,10 @@ class BTServiceImpl {
         }
     }
 
+    isConnected() {
+        return this.connected;
+    }
+
     isRunning() {
         return this._isRunning;
     }
@@ -222,6 +227,7 @@ class BTServiceImpl {
                 thisObj.addMessage(TOTAL_INFO_COMMAND);
                 setInterval(() => { thisObj.intervalHandler() }, 200);
                 EventBus.$emit("btConnected");
+                thisObj.connected = true;
                 console.log("btConnected emit");
             })
             .catch(error => { console.log(error); });
