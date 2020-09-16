@@ -20,12 +20,12 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row" :class="started ? '':'d-none'">
       <div class="col px-0">
         <CommandPanel title="Incline Level" iconName="fa-mountain" commandType="incline" />
       </div>
     </div>
-    <div class="row">
+    <div class="row" :class="started ? '':'d-none'">
       <div class="col px-0">
         <CommandPanel title="Speed Level" iconName="fa-tachometer-alt" commandType="speed" />
       </div>
@@ -42,9 +42,15 @@ import CommandPanel from '../components/CommandPanel.vue'
 import Chart from '../components/Chart.vue'
 import SettingsDialog from '../components/SettingsDialog.vue'
 import { BTService } from '../services/BTService';
+import { EventBus } from '../event-bus';
 
 export default {
   name: 'Home',
+  data() {
+    return {
+      started: false
+    }
+  },
   components: {
       TopNav,
       StatusInfo,
@@ -54,6 +60,13 @@ export default {
       SettingsDialog
   },
   created() {
+    let thisObj = this;
+    EventBus.$on('btRunning', () => {
+      thisObj.started = true;
+    });
+    EventBus.$on('btStopped', () => {
+      thisObj.started = false;
+    });
     if (!BTService.isConnected()) {
       this.$router.push({ path: "/" });
     }
