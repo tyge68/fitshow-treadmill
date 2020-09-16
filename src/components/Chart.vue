@@ -1,5 +1,5 @@
 <template>
-  <canvas id="programChart"></canvas>
+  <canvas></canvas>
 </template>
 
 <script>
@@ -90,7 +90,7 @@ class TrainingProgramChart {
 export default {
   name: 'Chart',
   mounted: function () {
-    let chartContext = document.getElementById("programChart").getContext('2d');
+    let chartContext = this.$el.getContext("2d");
     new TrainingProgramChart(chartContext);
   }
 }
