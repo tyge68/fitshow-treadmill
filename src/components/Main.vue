@@ -1,5 +1,5 @@
 <template>
-  <div id="main" class="d-none">
+  <div :class="connected ? '':'d-none'">
     <div class="row">
       <div class="col">
           <TopNav />
@@ -44,12 +44,13 @@ import Chart from './Chart.vue'
 import SettingsDialog from './SettingsDialog.vue'
 import { EventBus } from '../event-bus'
 
-EventBus.$once('btConnected', () => {
-  window.jQuery('#main').toggleClass('d-none');
-});
-
 export default {
   name: 'Main',
+  data() {
+    return {
+      connected: false
+    }
+  },
   components: {
       TopNav,
       StatusInfo,
@@ -58,6 +59,12 @@ export default {
       CommandSpeedPanel,
       Chart,
       SettingsDialog
+  },
+  created() {
+    let thisObj = this;
+    EventBus.$once('btConnected', () => {
+      thisObj.connected = true;
+    });
   }
 
 }

@@ -91,11 +91,6 @@ class ProgramExecutorImpl {
         return JSON.parse(JSON.stringify(this.allPrograms));
     }
 
-    setSelectedProgram(selection) {
-        this.selectedProgram = selection;
-        this.reinitProgram();
-    }    
-
     updateProgress() {
         let programProgressRatio = 0,
             programRemainingTime = 0,
@@ -162,7 +157,7 @@ class ProgramExecutorImpl {
     }
     
     reinitProgram() {        
-        this.selectedProgram = this.selectedProgram || this.getAllPrograms()[0];        
+        this.selectedProgram = this.getAllPrograms()[this.allSettings.programId];        
 
         this.programQueue = [];
 

@@ -1,53 +1,47 @@
 <template>
-  <div id="progressionPanel" class="d-none">
+  <div id="progressionPanel" :class="running ? '' : 'd-none'">
     <div class="progress my-3" data-toggle="tooltip" data-placement="top" title="Total Remaining Time">
-      <div id="programProgress" class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+      <div id="programProgress" class="progress-bar progress-bar-striped bg-success" role="progressbar" :style="'width: '+program.percent+'%;'" :aria-valuenow="program.percent" aria-valuemin="0" aria-valuemax="100">{{ program.remaining }}</div>
     </div>
     <div class="progress my-3" data-toggle="tooltip" data-placement="bottom" title="Step Remaining Time">
-      <div id="stepProgress" class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+      <div id="stepProgress" class="progress-bar progress-bar-striped bg-info" role="progressbar" :style="'width:'+step.percent+'%;'" :aria-valuenow="step.percent" aria-valuemin="0" aria-valuemax="100">{{ step.remaining }}</div>
     </div>
   </div>
 </template>
 
 <script>
 import { EventBus } from '../event-bus';
-const $ = window.jQuery;
-EventBus.$on('trainingProgression', (data) => {
-  $('#programProgress')
-      .css('width', data.program.percent+'%')
-      .attr('aria-valuenow', data.program.percent)
-      .html(data.program.remaining);
-  $('#stepProgress')
-      .css('width', data.step.percent+'%')
-      .attr('aria-valuenow', data.step.percent)
-      .html(data.step.remaining);
-});
-
-EventBus.$on('btStopped', () => {
-  let progressionPanel = $('#progressionPanel');
-  if (!progressionPanel.hasClass('d-none')) {
-    progressionPanel.addClass('d-none');
-  }
-  $('#programProgress')
-      .css('width', '0%')
-      .attr('aria-valuenow', 0)
-      .html('');
-  $('#stepProgress')
-      .css('width', '0%')
-      .attr('aria-valuenow', 0)
-      .html('');
-});
-
-EventBus.$on('trainingProgramStarted', () => {
-  let progressionPanel = $('#progressionPanel');
-  if (progressionPanel.hasClass('d-none')) {
-    progressionPanel.removeClass('d-none');
-  }
-});
-
 
 export default {
-  name: 'ProgressionInfo'
+  name: 'ProgressionInfo',
+  data() {
+    return {
+      running: false,
+      program: {
+        percent: 0,
+        remaining: ''
+      },
+      step: {
+        percent: 0,
+        remaining: ''
+      }
+    }
+  },
+  created() {
+    let thisObj = this;
+    EventBus.$on('trainingProgression', (data) => {
+      thisObj.program = data.program;
+      thisObj.step = data.step;
+    });
+
+    EventBus.$on('btStopped', () => {
+      thisObj.running = false;
+    });
+
+    EventBus.$on('trainingProgramStarted', () => {
+      thisObj.running = true;
+    });
+  }
 }
 </script>
 

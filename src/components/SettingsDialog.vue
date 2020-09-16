@@ -49,6 +49,17 @@
               </select>
             </div>
           </div>
+          <div class="form-group row">
+            <legend class="col-form-label col-sm-4 pt-0">Program</legend>
+            <div class="col-sm-4">
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ programTitle }}</button>
+                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                  <a @click="selectProgram" v-for="(item, index) in programs" v-bind:key="item.title" class="dropdown-item" href="#" v-bind:data-program-index="index">{{ item.title }}</a>
+                </div>
+              </div>
+            </div>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -67,16 +78,27 @@ export default {
   name: 'SettingsDialog',
   data() {
     return {
+      programTitle: 'Select Program',
+      programs: ProgramExecutor.getAllPrograms(),
       settings: ProgramExecutor.getSettings(),
       validDistances: [ 1, 2, 3, 5, 10, 15, 30 ],
       validTimes: [ 5, 10, 30, 45, 60, 90 ]
     }
   },
   methods: {
+    selectProgram(event) {
+      let selectedProgramIdx = event.target.dataset.programIndex;
+      let selectedProgram = ProgramExecutor.getAllPrograms()[selectedProgramIdx];
+      this.settings.programId = selectedProgramIdx;
+      this.programTitle = selectedProgram.title;
+    },
     saveChanges() {
       ProgramExecutor.saveSettings(this.settings);
       ProgramExecutor.reinitProgram();
     }
+  },
+  mounted() {
+    this.programTitle = ProgramExecutor.selectedProgram.title;
   }
 }
 </script>
