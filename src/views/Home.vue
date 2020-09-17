@@ -12,20 +12,20 @@
     </div>
     <div class="row">
       <div class="col">
-        <div class="collapse multi-collapse" id="chartPanel">
+        <div :class='showChartPanel'>
           <Chart />
         </div>
-        <div class="collapse multi-collapse show" id="statusInfoPanel">
+        <div :class='showStatusPanel'>
           <StatusInfo />
         </div>
       </div>
     </div>
-    <div class="row" :class="started ? '':'d-none'">
+    <div class="row" :class="$store.state.started ? '':'d-none'">
       <div class="col px-0">
         <CommandPanel title="Incline Level" iconName="fa-mountain" commandType="incline" />
       </div>
     </div>
-    <div class="row" :class="started ? '':'d-none'">
+    <div class="row" :class="$store.state.started ? '':'d-none'">
       <div class="col px-0">
         <CommandPanel title="Speed Level" iconName="fa-tachometer-alt" commandType="speed" />
       </div>
@@ -41,16 +41,9 @@ import ProgressionInfo from '../components/ProgressionInfo.vue'
 import CommandPanel from '../components/CommandPanel.vue'
 import Chart from '../components/Chart.vue'
 import SettingsDialog from '../components/SettingsDialog.vue'
-import { BTService } from '../services/BTService';
-import { EventBus } from '../event-bus';
 
 export default {
   name: 'Home',
-  data() {
-    return {
-      started: false
-    }
-  },
   components: {
       TopNav,
       StatusInfo,
@@ -59,15 +52,18 @@ export default {
       Chart,
       SettingsDialog
   },
+  computed: {
+      showChartPanel() {
+        let toggleCountMod = this.$store.state.toggleCount % 2;
+        return toggleCountMod === 0 ? 'd-none':'';
+      },
+      showStatusPanel() {
+        let toggleCountMod = this.$store.state.toggleCount % 2;
+        return toggleCountMod === 1 ? 'd-none':''
+      }
+  },
   created() {
-    let thisObj = this;
-    EventBus.$on('btRunning', () => {
-      thisObj.started = true;
-    });
-    EventBus.$on('btStopped', () => {
-      thisObj.started = false;
-    });
-    if (!BTService.isConnected()) {
+    if (!this.$store.state.connected) {
       this.$router.push({ path: "/" });
     }
   }

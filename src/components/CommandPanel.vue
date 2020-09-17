@@ -1,13 +1,12 @@
 <template>
   <div class="col btn-group">
     <div class="btn btn-secondary" data-toggle="tooltip" data-placement="top" :title="title"><i class="fas" :class="iconName"></i></div>
-    <button v-for="n in 6" v-bind:key="n" @click="changeCommand" type="button" class="btn btn-primary" :disabled="!started">{{ n * 2 }}</button>
+    <button v-for="n in 6" v-bind:key="n" @click="changeCommand" type="button" class="btn btn-primary" :disabled="!$store.state.started">{{ n * 2 }}</button>
   </div>
 </template>
 
 <script>
 import { BTService } from '../services/BTService';
-import { EventBus } from '../event-bus';
 
 export default {
   name: 'CommandPanel',
@@ -25,11 +24,6 @@ export default {
       required: true
     }
   },
-  data() {
-    return {
-      started: false
-    };
-  },
   methods: {
     changeCommand: function (event) {
       var newValue = parseInt(event.target.innerHTML);
@@ -39,15 +33,6 @@ export default {
         BTService.sendIncAndSpeed(newValue, -1);
       }
     }
-  },
-  created() {
-    let thisObj = this;
-    EventBus.$on('btRunning', () => {
-      thisObj.started = true;
-    });
-    EventBus.$on('btStopped', () => {
-      thisObj.started = false;
-    });
   }
 }
 </script>

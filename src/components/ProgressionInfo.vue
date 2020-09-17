@@ -1,5 +1,5 @@
 <template>
-  <div id="progressionPanel" :class="running ? '' : 'd-none'">
+  <div id="progressionPanel" :class="$store.state.running ? '' : 'd-none'">
     <div class="progress my-3" data-toggle="tooltip" data-placement="top" title="Total Remaining Time">
       <div id="programProgress" class="progress-bar progress-bar-striped bg-success" role="progressbar" :style="'width: '+program.percent+'%;'" :aria-valuenow="program.percent" aria-valuemin="0" aria-valuemax="100">{{ program.remaining }}</div>
     </div>
@@ -16,7 +16,6 @@ export default {
   name: 'ProgressionInfo',
   data() {
     return {
-      running: false,
       program: {
         percent: 0,
         remaining: ''
@@ -34,13 +33,6 @@ export default {
       thisObj.step = data.step;
     });
 
-    EventBus.$on('btStopped', () => {
-      thisObj.running = false;
-    });
-
-    EventBus.$on('trainingProgramStarted', () => {
-      thisObj.running = true;
-    });
   }
 }
 </script>

@@ -155,7 +155,13 @@ class BTServiceImpl {
         let ending = new Uint8Array(MESAGE_ENDING);
         let commandMerged = this.mergeTypedArraysUnsafe(command, this.checksum(command), ending);
         //console.log('>' + convertArray(commandMerged));
-        return c_serialPortWrite.writeValue(commandMerged);
+        try {
+            c_serialPortWrite.writeValue(commandMerged);
+        } catch(err) {
+            console.log(err);
+            this.connected = false;
+            EventBus.$emit("btDisconnected");
+        }
     }
 
     isCommandResult(command, result) {

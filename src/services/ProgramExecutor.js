@@ -55,11 +55,16 @@ class ProgramExecutorImpl {
         if (!storedPrograms) {
           // initialize with a deep copy of the default programs
           allPrograms = JSON.parse(JSON.stringify(ALL_PROGRAMS));
-          localStorage.setItem('trainingPrograms', JSON.stringify(allPrograms));
+          this.savePrograms();
         } else {
           allPrograms = JSON.parse(storedPrograms);
         }
         this.allPrograms = allPrograms;
+    }
+
+    savePrograms() {
+        let localStorage = window.localStorage;
+        localStorage.setItem('trainingPrograms', JSON.stringify(this.allPrograms));
     }
 
     loadSettings() {
@@ -154,6 +159,11 @@ class ProgramExecutorImpl {
       } else {
           this.stop();
       }
+    }
+
+    updateProgram(idx, data) {
+        this.allPrograms[idx] = data;
+        this.savePrograms();
     }
     
     reinitProgram() {        
