@@ -7,7 +7,7 @@
             <div class="col">
               <a @click="selectProgram" class="nav-link" :data-index="index" href="#">{{ item.title }}</a>
             </div>
-            <div class="col-sm-1">
+            <div class="col-sm-1" v-if="!item.readOnly">
               <button @click="deleteProgram" class="btn btn-primary" :data-index="index"><i class="far fa-trash-alt"></i></button>
             </div>
           </div>
@@ -23,13 +23,13 @@
           <div class="form-group row">
             <legend class="col-form-label col-sm-2   pt-0">Program Title</legend>
             <div class="col-sm-8">
-              <input v-model="selectedProgram.title" class="form-control" />
+              <input v-model="selectedProgram.title" class="form-control" :disabled="selectedProgram.readOnly" />
             </div>
           </div>
           <div class="form-group row">
             <legend class="col-form-label col-sm-2   pt-0">Step Duration (seconds)</legend>
             <div class="col-sm-8">
-              <input v-model="$v.selectedProgram.stepDuration.$model" class="form-control" />
+              <input v-model="$v.selectedProgram.stepDuration.$model" class="form-control" :disabled="selectedProgram.readOnly" />
               <div class="invalid-feedback d-block" v-if="$v.selectedProgram.stepDuration.$invalid">Must be between 30 and 3600</div>
             </div>
           </div>
@@ -53,14 +53,14 @@
                     <div class="form-control">{{ index }}</div>
                   </div>
                   <div class="col-sm-2">
-                    <input v-model="item.i.$model" class="form-control" />
+                    <input v-model="item.i.$model" class="form-control" :disabled="selectedProgram.readOnly" />
                     <div class="invalid-feedback d-block" v-if="!item.i.between">Must be between -1 and 15</div>
                   </div>
                   <div class="col-sm-2">
-                    <input v-model="item.s.$model" class="form-control" />
+                    <input v-model="item.s.$model" class="form-control" :disabled="selectedProgram.readOnly" />
                     <div class="invalid-feedback d-block" v-if="!item.s.between">Must be between 2 and 15</div>
                   </div>
-                  <div class="col-sm-2">
+                  <div class="col-sm-2" v-if="!selectedProgram.readOnly">
                     <button @click="removeStep" class="btn btn-primary">
                       <i class="far fa-trash-alt"></i>
                     </button>
@@ -71,7 +71,7 @@
                     Please make sure to have at least 5 steps.
                   </div>
                 </div>
-                <div class="row">
+                <div class="row" v-if="!selectedProgram.readOnly">
                   <div class="col-sm-1">
                     <button @click="addStep" class="btn btn-primary">
                       Add
@@ -84,13 +84,13 @@
               <canvas class="sticky-top"></canvas>
             </div>
           </div>
-          <div class="container-fluid">
+          <div class="container-fluid" v-if="!selectedProgram.readOnly">
             <div class="row">
               <div class="col-sm-1">
                 <center><button @click="save" class="btn btn-primary" :disabled="$v.$invalid">Save</button></center>
               </div>
               <div class="col-sm-2 invalid-feedback d-block" v-if="$v.$invalid">Please check for invalid inputs</div>
-              <div class="col-sm-1">
+              <div class="col-sm-1" v-if="!isNew">
                 <center><button @click="reset" class="btn btn-primary">Reset</button></center>
               </div>
             </div>
@@ -127,8 +127,9 @@ export default {
   name: 'ProgramEditor',
   data() {
     return {
+      isNew: false,
       programs: ProgramExecutor.getAllPrograms(),
-      selectedProgram: ProgramExecutor.getProgram(0),
+      selectedProgram: ProgramExecutor.getProgram(0) || false,
       selectedIdx: 0
     }
   },
@@ -142,13 +143,16 @@ export default {
       }
     },
     addProgram() {
-      if (!this.$v.$anyDirty) {
+      if (this.$v && this.$v.$anyDirty) {
+        window.jQuery(this.errorDialog).modal({ show: true })
+      } else {
         this.selectedIdx = ProgramExecutor.createNew()
         this.programs = ProgramExecutor.getAllPrograms()
         this.selectedProgram = ProgramExecutor.getProgram(this.selectedIdx)
-        this.$nextTick(() => { this.$v.$touch() })
-    } else {
-        window.jQuery(this.errorDialog).modal({ show: true })
+        this.isNew = true
+        if (this.$v) {
+          this.$nextTick(() => { this.$v.$touch() })
+        }
       }
     },
     deleteProgram(event) {
@@ -161,10 +165,9 @@ export default {
           this.selectedIdx = programsLength - 1
         }
         if (this.selectedIdx < 0) {
-          this.selectedProgram = null
+          this.selectedProgram = false
         } else {
           this.selectedProgram = ProgramExecutor.getProgram(this.selectedIdx)
-          this.$nextTick(() => { this.$v.$touch() })
         }
     } else {
         window.jQuery(this.errorDialog).modal({ show: true })
@@ -173,6 +176,7 @@ export default {
     save(event) {
       ProgramExecutor.updateProgram(this.selectedIdx, this.selectedProgram)
       this.programs = ProgramExecutor.getAllPrograms()
+      this.isNew = false,
       this.$nextTick(() => { this.$v.$reset() })
       event.preventDefault()
     },
@@ -232,11 +236,13 @@ export default {
     }
   },
   mounted() {
-    this.$nextTick(() => {
-      this.errorDialog = this.$el.getElementsByClassName("modal")[0]
-      this.chartContext = this.$el.getElementsByTagName("canvas")[0].getContext('2d')
-      this.drawChart()
-    })
+    if (this.selectedProgram) {
+      this.$nextTick(() => {
+        this.errorDialog = this.$el.getElementsByClassName("modal")[0]
+        this.chartContext = this.$el.getElementsByTagName("canvas")[0].getContext('2d')
+        this.drawChart()
+      })
+    }
   },
   watch: {
     selectedProgram: {

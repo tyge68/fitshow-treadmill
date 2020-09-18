@@ -113,7 +113,7 @@ class ProgramExecutorImpl {
     }
 
     getProgram(index) {
-        return JSON.parse(JSON.stringify(this.allPrograms[index]))
+        return this.allPrograms && this.allPrograms.length > 0 ? JSON.parse(JSON.stringify(this.allPrograms[index])) : null
     }
 
     updateProgress() {

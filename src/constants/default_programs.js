@@ -1,4 +1,5 @@
 const CHAOTIC_HILLS = {
+    readOnly: true,
     title: 'Chaotic Hills',
     stepDuration: 120,
     steps: [
@@ -10,6 +11,7 @@ const CHAOTIC_HILLS = {
   }
 
 const EASY_PIZZY = {
+    readOnly: true,
     title: 'Easy pizzy',
     stepDuration: 120,
     steps: [
@@ -21,6 +23,7 @@ const EASY_PIZZY = {
   }
 
 const MOUNTAIN_HELL = {
+    readOnly: true,
     title: 'Mountain Hell',
     stepDuration: 120,
     steps: [
