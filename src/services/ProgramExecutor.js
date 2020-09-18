@@ -1,114 +1,129 @@
-import { EventBus } from '../event-bus';
-import { BTService, STOP_COMMAND } from './BTService';
-import { ALL_PROGRAMS } from '../constants/default_programs';
-import { DEFAULT_SETTINGS } from '../constants/default_settings';
+import { EventBus } from '../event-bus'
+import { BTService, STOP_COMMAND } from './BTService'
+import { ALL_PROGRAMS } from '../constants/default_programs'
+import { DEFAULT_SETTINGS } from '../constants/default_settings'
 
-import moment from 'moment';
-import momentDuration from 'moment-duration-format';
+import moment from 'moment'
+import momentDuration from 'moment-duration-format'
 
-momentDuration(moment);
+momentDuration(moment)
 
 class ProgramExecutorImpl {
 
     constructor() {
-        this.loadPrograms();
-        this.loadSettings();
-        this.reinitProgram();
+        this.loadPrograms()
+        this.loadSettings()
+        this.reinitProgram()
     }
 
     scaleForSettings() {
         switch(this.allSettings.mode) {
-            case 'time': this.scaleForTime(); break;
-            case 'distance': this.scaleForDistance(); break;
+            case 'time': this.scaleForTime(); break
+            case 'distance': this.scaleForDistance(); break
         }
     }
 
     scaleForDistance() {
-        let math = window.math;
-        let targetDistance = this.getSettings().distancelimit;
-        let speedWeigths = math.column(this.getSteps(), 0);
-        let speedScaledWeigths = math.divide(speedWeigths, 3600);
-        let sumSpeedScaled = math.sum(speedScaledWeigths);
-        console.log("sumSpeedScaled", sumSpeedScaled);
-        let targetDuration = targetDistance / sumSpeedScaled;
-        console.log("optimized targetDuration = ", targetDuration);
-        console.log("totalDuration = ", moment.duration(targetDuration * speedWeigths.length, 'seconds').format('H:mm:ss'));
-        this.setStepDuration(math.round(targetDuration, 3));
+        let math = window.math
+        let targetDistance = this.getSettings().distancelimit
+        let speedWeigths = this.getSteps().map(i => i.s)
+        let speedScaledWeigths = math.divide(speedWeigths, 3600)
+        let sumSpeedScaled = math.sum(speedScaledWeigths)
+        console.log("sumSpeedScaled", sumSpeedScaled)
+        let targetDuration = targetDistance / sumSpeedScaled
+        console.log("optimized targetDuration = ", targetDuration)
+        console.log("totalDuration = ", moment.duration(targetDuration * speedWeigths.length, 'seconds').format('H:mm:ss'))
+        this.setStepDuration(math.round(targetDuration, 3))
     }
 
     scaleForTime() {
-        let targetTotalDurationSeconds = this.getSettings().timelimit * 60;
-        let targetStepDurationSeconds = targetTotalDurationSeconds / this.getSteps().length;
-        this.setStepDuration(targetStepDurationSeconds);
+        let targetTotalDurationSeconds = this.getSettings().timelimit * 60
+        let targetStepDurationSeconds = targetTotalDurationSeconds / this.getSteps().length
+        this.setStepDuration(targetStepDurationSeconds)
     }
 
     setStepDuration(newDuration) {
-        console.log("change step duration to " + newDuration);
-        this.currentStepDuration = newDuration;
+        console.log("change step duration to " + newDuration)
+        this.currentStepDuration = newDuration
     }
 
     loadPrograms() {
-        let localStorage = window.localStorage;
-        let storedPrograms = localStorage.getItem('trainingPrograms');
-        let allPrograms;
+        let localStorage = window.localStorage
+        let storedPrograms = localStorage.getItem('trainingPrograms')
         
         if (!storedPrograms) {
           // initialize with a deep copy of the default programs
-          allPrograms = JSON.parse(JSON.stringify(ALL_PROGRAMS));
-          this.savePrograms();
+          this.allPrograms = JSON.parse(JSON.stringify(ALL_PROGRAMS))
+          this.savePrograms()
         } else {
-          allPrograms = JSON.parse(storedPrograms);
+          this.allPrograms = JSON.parse(storedPrograms)
         }
-        this.allPrograms = allPrograms;
     }
 
     savePrograms() {
-        let localStorage = window.localStorage;
-        localStorage.setItem('trainingPrograms', JSON.stringify(this.allPrograms));
+        let localStorage = window.localStorage
+        localStorage.setItem('trainingPrograms', JSON.stringify(this.allPrograms))
     }
 
     loadSettings() {
-        let localStorage = window.localStorage;
-        let storedSettings = localStorage.getItem('trainingSettings');
-        let allSettings;
+        let localStorage = window.localStorage
+        let storedSettings = localStorage.getItem('trainingSettings')
+        let allSettings
         
         if (!storedSettings) {
           // initialize with a deep copy of the default programs
-          allSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
-          localStorage.setItem('trainingSettings', JSON.stringify(allSettings));
+          allSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS))
+          localStorage.setItem('trainingSettings', JSON.stringify(allSettings))
         } else {
-            allSettings = JSON.parse(storedSettings);
+            allSettings = JSON.parse(storedSettings)
         }
-        this.allSettings = allSettings;
+        this.allSettings = allSettings
     }
 
     getSettings() {
-        return JSON.parse(JSON.stringify(this.allSettings));
+        return JSON.parse(JSON.stringify(this.allSettings))
     }
 
     saveSettings(newSettings) {
-        this.allSettings = newSettings;
-        let localStorage = window.localStorage;
-        localStorage.setItem('trainingSettings', JSON.stringify(this.allSettings));
+        this.allSettings = newSettings
+        let localStorage = window.localStorage
+        localStorage.setItem('trainingSettings', JSON.stringify(this.allSettings))
+    }
+
+    createNew() {
+        this.allPrograms.push({
+            title: 'Untitled',
+            stepDuration: 120,
+            steps: [
+              {s:2, i:0}, // warm up
+              {s:4, i:0}, {s:5, i:0}, {s:6, i:0},
+              {s:2, i:0} // calm down
+            ]
+        })
+        return this.allPrograms.length - 1
     }
 
     getAllPrograms() {
-        return JSON.parse(JSON.stringify(this.allPrograms));
+        return JSON.parse(JSON.stringify(this.allPrograms))
+    }
+
+    getProgram(index) {
+        return JSON.parse(JSON.stringify(this.allPrograms[index]))
     }
 
     updateProgress() {
         let programProgressRatio = 0,
             programRemainingTime = 0,
             stepProgressRatio = 0,
-            stepRemainingTime = 0;
+            stepRemainingTime = 0
 
         if (BTService.isRunning() && this.isExecuting()) {
-            let currentProgramDuration = Math.round((Date.now() - this.programStartTime) / 1000);
-            programProgressRatio = Math.round( currentProgramDuration * 100 / this.programDuration);
-            programRemainingTime = moment.duration(this.programDuration - currentProgramDuration, 'seconds').format('H:mm:ss');
-            let currentDuration = (Date.now() - this.currentStepStartTime) / 1000;
-            stepProgressRatio = Math.round( currentDuration * 100 / this.currentStepDuration);
-            stepRemainingTime = Math.round(this.currentStepDuration - currentDuration);
+            let currentProgramDuration = Math.round((Date.now() - this.programStartTime) / 1000)
+            programProgressRatio = Math.round( currentProgramDuration * 100 / this.programDuration)
+            programRemainingTime = moment.duration(this.programDuration - currentProgramDuration, 'seconds').format('H:mm:ss')
+            let currentDuration = (Date.now() - this.currentStepStartTime) / 1000
+            stepProgressRatio = Math.round( currentDuration * 100 / this.currentStepDuration)
+            stepRemainingTime = Math.round(this.currentStepDuration - currentDuration)
         }
         EventBus.$emit('trainingProgression', {
             program: {
@@ -119,73 +134,73 @@ class ProgramExecutorImpl {
                 percent: stepProgressRatio,
                 remaining:  stepRemainingTime
             }
-        });
+        })
     }
 
     isExecuting() {
-        return this.programInterval && true;
+        return this.programInterval && true
     }
 
     start() {
-        let thisObj = this;
-        this.programStartTime = Date.now();
-        this.currentStepStartTime = Date.now();
-        this.execute(); // now then with interval
-        this.programInterval = setInterval(() => { thisObj.execute() }, this.currentStepDuration * 1000);
-        this.progressInterval = setInterval(() => { thisObj.updateProgress(); }, 1000);
-        EventBus.$emit('trainingProgramStarted');
+        let thisObj = this
+        this.programStartTime = Date.now()
+        this.currentStepStartTime = Date.now()
+        this.execute() // now then with interval
+        this.programInterval = setInterval(() => { thisObj.execute() }, this.currentStepDuration * 1000)
+        this.progressInterval = setInterval(() => { thisObj.updateProgress() }, 1000)
+        EventBus.$emit('trainingProgramStarted')
     }
 
     stop() {
-        BTService.addMessage(STOP_COMMAND);
-        clearInterval(this.programInterval);
-        clearInterval(this.progressInterval);
-        this.programInterval = null;
-        this.progressInterval = null;
-        EventBus.$emit('trainingProgramStopped');
+        BTService.addMessage(STOP_COMMAND)
+        clearInterval(this.programInterval)
+        clearInterval(this.progressInterval)
+        this.programInterval = null
+        this.progressInterval = null
+        EventBus.$emit('trainingProgramStopped')
     }
 
     getSteps() {
-        return JSON.parse(JSON.stringify(this.programQueue));
+        return JSON.parse(JSON.stringify(this.programQueue))
     }
     
     execute() {
       if (BTService.isRunning() && this.programQueue.length > 0) {
-        let previousSteps = this.getSteps();
-        this.currentStep = this.programQueue.shift();
-        EventBus.$emit("trainingStepChanged", previousSteps, this.currentStep);
-        this.currentStepStartTime = Date.now();
-        BTService.sendIncAndSpeed(this.currentStep[1], this.currentStep[0]);
+        let previousSteps = this.getSteps()
+        this.currentStep = this.programQueue.shift()
+        EventBus.$emit("trainingStepChanged", previousSteps, this.currentStep)
+        this.currentStepStartTime = Date.now()
+        BTService.sendIncAndSpeed(this.currentStep.i, this.currentStep.s)
       } else {
-          this.stop();
+          this.stop()
       }
     }
 
     updateProgram(idx, data) {
-        this.allPrograms[idx] = data;
-        this.savePrograms();
+        this.allPrograms[idx] = data
+        this.savePrograms()
     }
     
     reinitProgram() {        
-        this.selectedProgram = this.getAllPrograms()[this.allSettings.programId];        
+        this.selectedProgram = this.getAllPrograms()[this.allSettings.programId]        
 
-        this.programQueue = [];
+        this.programQueue = []
 
-        this.currentSpeed = 0;
-        this.currentIncline = 0;
-        this.currentStep = 0;
+        this.currentSpeed = 0
+        this.currentIncline = 0
+        this.currentStep = 0
 
-        let programQueue = this.programQueue;
+        let programQueue = this.programQueue
         if (this.selectedProgram) {
-            this.currentStepDuration = this.selectedProgram.stepDuration;
-            this.selectedProgram.steps.forEach(step => programQueue.push(step));
-            this.scaleForSettings();
-            this.programDuration = this.selectedProgram ? this.currentStepDuration * this.selectedProgram.steps.length : 0;
+            this.currentStepDuration = this.selectedProgram.stepDuration
+            this.selectedProgram.steps.forEach(step => programQueue.push(step))
+            this.scaleForSettings()
+            this.programDuration = this.selectedProgram ? this.currentStepDuration * this.selectedProgram.steps.length : 0
         }
 
-        EventBus.$emit("trainingProgramReInit");
+        EventBus.$emit("trainingProgramReInit")
     }
     
 }
 
-export const ProgramExecutor = new ProgramExecutorImpl();
+export const ProgramExecutor = new ProgramExecutorImpl()

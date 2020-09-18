@@ -1,8 +1,9 @@
-import Vue from 'vue';
-import App from './App.vue';
-import router from './router';
-
-import { store } from './store';
+import Vue from 'vue'
+import App from './App.vue'
+import router from './router'
+import { store } from './store'
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
 
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {
@@ -12,7 +13,10 @@ router.beforeEach((to, from, next) => {
 })
 
 Vue.config.productionTip = false
-import { EventBus } from './event-bus';
+import { EventBus } from './event-bus'
+
+// set defaults for Chart
+window.Chart.defaults.global.animation.duration = 0;
 
 new Vue({
   router,
@@ -20,19 +24,19 @@ new Vue({
   created() {
     EventBus.$on('btRunning', () => {
       store.commit('start')
-    });
+    })
     EventBus.$on('btStopped', () => {
       store.commit('stop')
-    });
+    })
     EventBus.$on('btConnected', () => {
       store.commit('connect')
-    });
+    })
     EventBus.$on('btDisconnected', () => {
       store.commit('disconnect')
-    });
+    })
     EventBus.$on('trainingProgramStarted', () => {
       store.commit('run')
-    });
+    })
   },
   render: h => h(App),
 }).$mount('#app')

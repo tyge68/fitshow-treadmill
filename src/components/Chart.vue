@@ -6,9 +6,6 @@
 import { ProgramExecutor } from '../services/ProgramExecutor';
 import { EventBus } from '../event-bus';
 
-// set defaults for Chart
-window.Chart.defaults.global.animation.duration = 0;
-
 class TrainingProgramChart {
 
     constructor(chartContext) {
@@ -30,8 +27,8 @@ class TrainingProgramChart {
         let dataIncline = chart.data.datasets[0].data;
 
         allStep.forEach((step, i) => {
-            dataSpeed[i]=step[0];
-            dataIncline[i]=step[1];
+            dataSpeed[i]=step.s;
+            dataIncline[i]=step.i;
         });
     
         // clear last data as it scroll left
@@ -50,8 +47,8 @@ class TrainingProgramChart {
         let dataIncline = [];
         ProgramExecutor.getSteps().forEach((step, i) => {
             newLabels.push('' + i);
-            dataSpeed.push(step[0]);
-            dataIncline.push(step[1]);
+            dataSpeed.push(step.s);
+            dataIncline.push(step.i);
         });
     
         if (this.chart) {
