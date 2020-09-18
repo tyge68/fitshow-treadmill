@@ -65,6 +65,11 @@ class ProgramExecutorImpl {
         localStorage.setItem('trainingPrograms', JSON.stringify(this.allPrograms))
     }
 
+    deleteProgram(index) {
+        this.allPrograms.splice(index, 1)
+        this.savePrograms()
+    }
+
     loadSettings() {
         let localStorage = window.localStorage
         let storedSettings = localStorage.getItem('trainingSettings')

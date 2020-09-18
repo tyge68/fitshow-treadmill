@@ -2,15 +2,24 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-2">
-        <ul class="nav flex-column">
-          <li v-for="(item, index) in programs" v-bind:key="item.title" class="nav-item">
-            <a @click="selectProgram" class="nav-link" :data-index="index" href="#">{{ item.title }}</a>
-          </li>
-        </ul>
-        <center><button @click="addProgram" class="btn btn-primary">Add</button></center>
+        <div class="container-fluid">
+          <div v-for="(item, index) in programs" v-bind:key="item.title" class="row">
+            <div class="col">
+              <a @click="selectProgram" class="nav-link" :data-index="index" href="#">{{ item.title }}</a>
+            </div>
+            <div class="col-sm-1">
+              <button @click="deleteProgram" class="btn btn-primary" :data-index="index"><i class="far fa-trash-alt"></i></button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <center><button @click="addProgram" class="btn btn-primary">Add</button></center>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="col-md-10">
-        <form role="form">
+        <form role="form" class="ml-2" v-if="selectedProgram">
           <div class="form-group row">
             <legend class="col-form-label col-sm-2   pt-0">Program Title</legend>
             <div class="col-sm-8">
@@ -53,7 +62,7 @@
                   </div>
                   <div class="col-sm-2">
                     <button @click="removeStep" class="btn btn-primary">
-                      <i class="fas fa-minus-circle"></i>
+                      <i class="far fa-trash-alt"></i>
                     </button>
                   </div>
                 </div>
@@ -138,6 +147,25 @@ export default {
         this.programs = ProgramExecutor.getAllPrograms()
         this.selectedProgram = ProgramExecutor.getProgram(this.selectedIdx)
         this.$nextTick(() => { this.$v.$touch() })
+    } else {
+        window.jQuery(this.errorDialog).modal({ show: true })
+      }
+    },
+    deleteProgram(event) {
+      if (!this.$v.$anyDirty) {
+        let selectedIdx = event.target.dataset.index
+        ProgramExecutor.deleteProgram(selectedIdx)
+        this.programs = ProgramExecutor.getAllPrograms()
+        let programsLength = this.programs.length
+        if (this.selectedIdx >= programsLength) {
+          this.selectedIdx = programsLength - 1
+        }
+        if (this.selectedIdx < 0) {
+          this.selectedProgram = null
+        } else {
+          this.selectedProgram = ProgramExecutor.getProgram(this.selectedIdx)
+          this.$nextTick(() => { this.$v.$touch() })
+        }
     } else {
         window.jQuery(this.errorDialog).modal({ show: true })
       }
