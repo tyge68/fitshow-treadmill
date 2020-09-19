@@ -1,101 +1,16 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-2">
-        <div class="container-fluid">
-          <div v-for="(item, index) in programs" v-bind:key="item.title" class="row">
-            <div class="col">
-              <a @click="selectProgram" class="nav-link" :data-index="index" href="#">{{ item.title }}</a>
-            </div>
-            <div class="col-sm-1" v-if="!item.readOnly">
-              <button @click="deleteProgram" class="btn btn-primary" :data-index="index"><i class="far fa-trash-alt"></i></button>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-3">
-              <center><button @click="addProgram" class="btn btn-primary">Add</button></center>
-            </div>
-          </div>
-        </div>
+      <div class="col">
+        <button @click="backHome" type="button" class="btn btn-secondary"><i class="fas fa-arrow-left"></i></button>
       </div>
-      <div class="col-md-10">
-        <form role="form" class="ml-2" v-if="selectedProgram">
-          <div class="form-group row">
-            <legend class="col-form-label col-sm-2   pt-0">Program Title</legend>
-            <div class="col-sm-8">
-              <input v-model="selectedProgram.title" class="form-control" :disabled="selectedProgram.readOnly" />
-            </div>
-          </div>
-          <div class="form-group row">
-            <legend class="col-form-label col-sm-2   pt-0">Step Duration (seconds)</legend>
-            <div class="col-sm-8">
-              <input v-model="$v.selectedProgram.stepDuration.$model" class="form-control" :disabled="selectedProgram.readOnly" />
-              <div class="invalid-feedback d-block" v-if="$v.selectedProgram.stepDuration.$invalid">Must be between 30 and 3600</div>
-            </div>
-          </div>
-          <div class="form-group row">
-            <legend class="col-form-label col-sm-2   pt-0">Steps</legend>
-            <div class="col-sm-4">
-              <div class="container-fluid">
-                <div class="row">
-                  <div class="col-sm-2">
-                    #
-                  </div>
-                  <div class="col-sm-2">
-                    Incline
-                  </div>
-                  <div class="col-sm-2">
-                    Speed
-                  </div>
-                </div>
-                <div class="row" v-for="(item, index) in $v.selectedProgram.steps.$each.$iter" v-bind:key="index" :data-index="index">
-                  <div class="col-sm-2">
-                    <div class="form-control">{{ index }}</div>
-                  </div>
-                  <div class="col-sm-2">
-                    <input v-model="item.i.$model" class="form-control" :disabled="selectedProgram.readOnly" />
-                    <div class="invalid-feedback d-block" v-if="!item.i.between">Must be between -1 and 15</div>
-                  </div>
-                  <div class="col-sm-2">
-                    <input v-model="item.s.$model" class="form-control" :disabled="selectedProgram.readOnly" />
-                    <div class="invalid-feedback d-block" v-if="!item.s.between">Must be between 2 and 15</div>
-                  </div>
-                  <div class="col-sm-2" v-if="!selectedProgram.readOnly">
-                    <button @click="removeStep" class="btn btn-primary">
-                      <i class="far fa-trash-alt"></i>
-                    </button>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-2 invalid-feedback d-block" v-if="!$v.selectedProgram.steps.minLength">
-                    Please make sure to have at least 5 steps.
-                  </div>
-                </div>
-                <div class="row" v-if="!selectedProgram.readOnly">
-                  <div class="col-sm-1">
-                    <button @click="addStep" class="btn btn-primary">
-                      Add
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <canvas class="sticky-top"></canvas>
-            </div>
-          </div>
-          <div class="container-fluid" v-if="!selectedProgram.readOnly">
-            <div class="row">
-              <div class="col-sm-1">
-                <center><button @click="save" class="btn btn-primary" :disabled="$v.$invalid">Save</button></center>
-              </div>
-              <div class="col-sm-2 invalid-feedback d-block" v-if="$v.$invalid">Please check for invalid inputs</div>
-              <div class="col-sm-1" v-if="!isNew">
-                <center><button @click="reset" class="btn btn-primary">Reset</button></center>
-              </div>
-            </div>
-          </div>
-        </form>
+    </div>
+    <div class="row">
+      <div class="col-md-2">
+        <ProgramsNav :programs="programs" @selectProgram="selectProgram" @addProgram="addProgram" @deleteProgram="deleteProgram" />
+      </div>
+      <div class="col-md-10" v-if="$v.selectedProgram">
+        <EditorFormPanel :selectedProgram="$v.selectedProgram" :isNew="isNew" @addStep="addStep" @removeStep="removeStep" @saveForm="save" @resetForm="reset" />
       </div>
     </div>
     <div class="modal" tabindex="-1" role="dialog">
@@ -121,6 +36,8 @@
 
 <script>
 import { ProgramExecutor } from '../services/ProgramExecutor'
+import ProgramsNav from '../components/ProgramsNav.vue'
+import EditorFormPanel from '../components/EditorFormPanel.vue'
 import { required, minLength, between } from 'vuelidate/lib/validators'
 
 export default {
@@ -133,125 +50,81 @@ export default {
       selectedIdx: 0
     }
   },
+  components: {
+      ProgramsNav,
+      EditorFormPanel
+  },  
   methods: {
-    selectProgram(event) {
+    selectProgram(index) {
       if (!this.$v.$anyDirty) {
-        this.selectedIdx = event.target.dataset.index
-        this.selectedProgram = ProgramExecutor.getProgram(this.selectedIdx)
+          this.selectedIdx = index
+          this.selectedProgram = ProgramExecutor.getProgram(this.selectedIdx)
       } else {
-        window.jQuery(this.errorDialog).modal({ show: true })
+          window.jQuery(this.errorDialog).modal({ show: true })
       }
     },
     addProgram() {
       if (this.$v && this.$v.$anyDirty) {
-        window.jQuery(this.errorDialog).modal({ show: true })
+          window.jQuery(this.errorDialog).modal({ show: true })
       } else {
-        this.selectedIdx = ProgramExecutor.createNew()
-        this.programs = ProgramExecutor.getAllPrograms()
-        this.selectedProgram = ProgramExecutor.getProgram(this.selectedIdx)
-        this.isNew = true
-        if (this.$v) {
+          this.selectedIdx = ProgramExecutor.createNew()
+          this.programs = ProgramExecutor.getAllPrograms()
+          this.selectedProgram = ProgramExecutor.getProgram(this.selectedIdx)
+          this.isNew = true
+          if (this.$v) {
           this.$nextTick(() => { this.$v.$touch() })
-        }
+          }
       }
     },
-    deleteProgram(event) {
+    backHome() {
       if (!this.$v.$anyDirty) {
-        let selectedIdx = event.target.dataset.index
-        ProgramExecutor.deleteProgram(selectedIdx)
-        this.programs = ProgramExecutor.getAllPrograms()
-        let programsLength = this.programs.length
-        if (this.selectedIdx >= programsLength) {
-          this.selectedIdx = programsLength - 1
-        }
-        if (this.selectedIdx < 0) {
-          this.selectedProgram = false
-        } else {
-          this.selectedProgram = ProgramExecutor.getProgram(this.selectedIdx)
-        }
-    } else {
+        this.$router.push({ path: "/home" })
+      } else {
         window.jQuery(this.errorDialog).modal({ show: true })
       }
     },
-    save(event) {
+    deleteProgram(index) {
+      if (!this.$v.$anyDirty) {
+          let selectedIdx = index
+          ProgramExecutor.deleteProgram(selectedIdx)
+          this.programs = ProgramExecutor.getAllPrograms()
+          let programsLength = this.programs.length
+          if (this.selectedIdx >= programsLength) {
+          this.selectedIdx = programsLength - 1
+          }
+          if (this.selectedIdx < 0) {
+          this.selectedProgram = false
+          } else {
+          this.selectedProgram = ProgramExecutor.getProgram(this.selectedIdx)
+          }
+      } else {
+          window.jQuery(this.errorDialog).modal({ show: true })
+      }
+    },
+    save() {
       ProgramExecutor.updateProgram(this.selectedIdx, this.selectedProgram)
       this.programs = ProgramExecutor.getAllPrograms()
       this.isNew = false,
       this.$nextTick(() => { this.$v.$reset() })
-      event.preventDefault()
     },
-    addStep(event) {
+    addStep() {
       this.selectedProgram.steps.push({ s:2, i:0 })
-      event.preventDefault()
     },
     reset() {
       this.selectedProgram = ProgramExecutor.getProgram(this.selectedIdx)
       this.$nextTick(() => { this.$v.$reset() })
     },
-    removeStep(event) {
-      let removedIndex = event.target.parentElement.parentElement.parentElement.dataset.index
+    removeStep(index) {
+      let removedIndex = index //event.target.parentElement.parentElement.parentElement.dataset.index
       this.selectedProgram.steps.splice(removedIndex, 1)
       event.preventDefault()
-    },
-    drawChart() {
-        let newLabels = [];
-        let dataSpeed = [];
-        let dataIncline = [];
-        this.selectedProgram.steps.forEach((step, i) => {
-            newLabels.push('' + i);
-            dataSpeed.push(step.s);
-            dataIncline.push(step.i);
-        });
-    
-        if (this.chart) {
-            this.chart.destroy();
-        }
-    
-        this.chart = new window.Chart(this.chartContext, {
-            // The type of chart we want to create
-            type: 'line',
-        
-            // The data for our dataset
-            data: {
-                labels: newLabels,
-                datasets: [{
-                    label: 'Incline',
-                    data: dataIncline,
-                    // Changes this dataset to become a line
-                    borderColor: 'rgb(0, 255, 0)',
-                    steppedLine: 'before',
-                    type: 'line'
-                },{
-                    label: 'Speed',
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: dataSpeed,
-                    steppedLine: 'before',
-                }]
-            },
-        
-            // Configuration options go here
-            options: {}
-        });    
     }
   },
   mounted() {
     if (this.selectedProgram) {
       this.$nextTick(() => {
         this.errorDialog = this.$el.getElementsByClassName("modal")[0]
-        this.chartContext = this.$el.getElementsByTagName("canvas")[0].getContext('2d')
-        this.drawChart()
       })
-    }
-  },
-  watch: {
-    selectedProgram: {
-      handler() {
-        if (!this.$v.$invalid) {
-          this.drawChart()
-        }
-      },
-      deep:true
     }
   },
   validations: {
@@ -281,5 +154,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+canvas {
+ min-width: 383px; 
+ min-height: 212px; 
+}
 </style>

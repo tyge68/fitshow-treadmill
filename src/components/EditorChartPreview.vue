@@ -1,51 +1,38 @@
 <template>
-  <canvas></canvas>
+    <canvas class="sticky-top"></canvas>
 </template>
 
 <script>
-import { ProgramExecutor } from '../services/ProgramExecutor';
-import { EventBus } from '../event-bus';
-
-class TrainingProgramChart {
-
-    constructor(chartContext) {
-      let thisObj = this;
-      this.chartContext = chartContext;
-      this.initChart();
-      EventBus.$on('trainingProgramReInit', () => {
-        thisObj.initChart();
-      });
-      EventBus.$on('trainingStepChanged', allSteps => {
-        thisObj.updateChart(allSteps);
-      });
+export default {
+  name: 'EditorChartPreview',
+  props: {
+    steps: {
+      type: Array,
+      required: true
     }
-
-    updateChart(allStep) {
-        console.log("Update Chart");
-        let chart = this.chart;
-        let dataSpeed = chart.data.datasets[1].data;
-        let dataIncline = chart.data.datasets[0].data;
-
-        allStep.forEach((step, i) => {
-            dataSpeed[i]=step.s;
-            dataIncline[i]=step.i;
-        });
-    
-        // clear last data as it scroll left
-        for(var i = allStep.length; i < dataSpeed.length; i++) {
-            dataSpeed[i]=0;
-            dataIncline[i]=0;
-        }
-        chart.update({
-            duration: 0
-        });
+  },
+  mounted() {
+    if (this.steps) {
+      this.$nextTick(() => {
+        this.chartContext = this.$el.getContext('2d')
+        this.drawChart()
+      })
     }
-
-    initChart() {
+  },
+  watch: {
+    steps: {
+      handler() {
+          this.drawChart()
+      },
+      deep:true
+    }
+  },
+  methods: {
+    drawChart() {
         let newLabels = [];
         let dataSpeed = [];
         let dataIncline = [];
-        ProgramExecutor.getSteps().forEach((step, i) => {
+        this.steps.forEach((step, i) => {
             newLabels.push('' + i);
             dataSpeed.push(step.s);
             dataIncline.push(step.i);
@@ -91,14 +78,7 @@ class TrainingProgramChart {
             }
         });    
     }
-}
-
-export default {
-  name: 'Chart',
-  mounted: function () {
-    let chartContext = this.$el.getContext("2d");
-    new TrainingProgramChart(chartContext);
-  }
+ }
 }
 </script>
 
