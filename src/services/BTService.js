@@ -6,7 +6,7 @@ const C_SERIAL_PORT_READ = '0000fff1-0000-1000-8000-00805f9b34fb';
 const C_SERIAL_PORT_WRITE = '0000fff2-0000-1000-8000-00805f9b34fb';
 
 const STATUS_COMMAND = [2, 81];
-export const START_COMMAND = [2, 83, 1];
+export const START_COMMAND = [2, 83, 1, 0, 0, 0, 0, 0];
 const INC_SPEED_COMMAND = [2, 83, 2];
 export const STOP_COMMAND = [2, 83, 3];
 const SPEED_INFO_COMMAND = [2, 80, 2];
