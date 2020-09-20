@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid">
-      <div class="btn-group">
-        <button type="button" class="btn btn-secondary" :class="$store.state.started ? 'd-none':''" data-toggle="modal" data-target="#editSettingsDialog"><i class="fas fa-cogs"></i></button>
+      <div class="btn-group" :class="$store.state.started ? 'd-none':''">
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editSettingsDialog"><i class="fas fa-cogs"></i></button>
         <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span class="sr-only">Toggle Dropdown</span>
         </button>
