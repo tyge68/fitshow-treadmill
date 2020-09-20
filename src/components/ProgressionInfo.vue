@@ -1,11 +1,7 @@
 <template>
-  <div id="progressionPanel" :class="$store.state.running ? '' : 'd-none'">
-    <div class="progress my-3" data-toggle="tooltip" data-placement="top" title="Total Remaining Time">
-      <div id="programProgress" class="progress-bar progress-bar-striped bg-success" role="progressbar" :style="'width: '+program.percent+'%;'" :aria-valuenow="program.percent" aria-valuemin="0" aria-valuemax="100">{{ program.remaining }}</div>
-    </div>
-    <div class="progress my-3" data-toggle="tooltip" data-placement="bottom" title="Step Remaining Time">
-      <div id="stepProgress" class="progress-bar progress-bar-striped bg-info" role="progressbar" :style="'width:'+step.percent+'%;'" :aria-valuenow="step.percent" aria-valuemin="0" aria-valuemax="100">{{ step.remaining }}</div>
-    </div>
+  <div :class="$store.state.running ? '' : 'md-hide'">
+    <md-progress-spinner class="md-primary" md-mode="determinate" :md-value="program.percent">{{ program.remaining }}</md-progress-spinner>
+    <md-progress-spinner class="md-secondary" md-mode="determinate" :md-value="step.percent">{{ step.remaining }}</md-progress-spinner>
   </div>
 </template>
 

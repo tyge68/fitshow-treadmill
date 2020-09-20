@@ -1,14 +1,7 @@
 <template>
-<div class="modal fade" id="editSettingsDialog" tabindex="-1" role="dialog" aria-labelledby="editSettingsLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editSettingsLabel">Edit Settings</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">        
+<md-dialog :md-active.sync="showDlg">
+  <md-dialog-title>Edit Settings</md-dialog-title>
+  <md-content>
         <form>
           <div class="form-group row">
             <legend class="col-form-label col-sm-4 pt-0">Running Mode</legend>
@@ -33,7 +26,7 @@
               </div>
             </div>
           </div>
-          <div class="form-group row" :class="{ 'd-none': settings.mode !== 'distance' }">
+          <div class="form-group row" :class="{ 'md-hide': settings.mode !== 'distance' }">
             <legend class="col-form-label col-sm-4 pt-0">Distance (km)</legend>
             <div class="col-sm-4">
               <select class="w-100 pl-2" v-model="settings.distancelimit" id="distanceSelect">
@@ -41,7 +34,7 @@
               </select>
             </div>
           </div>
-          <div class="form-group row" :class="{ 'd-none': settings.mode !== 'time' }">
+          <div class="form-group row" :class="{ 'md-hide': settings.mode !== 'time' }">
             <legend class="col-form-label col-sm-4 pt-0">Time (minutes)</legend>
             <div class="col-sm-4">
               <select class="w-100 pl-2" v-model="settings.timelimit" id="timeSelect">
@@ -61,23 +54,23 @@
             </div>
           </div>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button @click="saveChanges" type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
+  </md-content>
+  <md-dialog-actions>
+    <md-button class="md-primary" @click="showDlg = false">Close</md-button>
+    <md-button class="md-primary" @click="saveChanges">Save</md-button>
+  </md-dialog-actions>
+</md-dialog>
 </template>
 
 <script>
-import { ProgramExecutor } from '../services/ProgramExecutor';
+import { ProgramExecutor } from '../services/ProgramExecutor'
+import { EventBus } from '../event-bus'
 
 export default {
   name: 'SettingsDialog',
   data() {
     return {
+      showDlg: true,
       programTitle: 'Select Program',
       programs: ProgramExecutor.getAllPrograms(),
       settings: ProgramExecutor.getSettings(),
@@ -87,18 +80,21 @@ export default {
   },
   methods: {
     selectProgram(event) {
-      let selectedProgramIdx = event.target.dataset.programIndex;
-      let selectedProgram = ProgramExecutor.getAllPrograms()[selectedProgramIdx];
-      this.settings.programId = selectedProgramIdx;
-      this.programTitle = selectedProgram.title;
+      let selectedProgramIdx = event.target.dataset.programIndex
+      let selectedProgram = ProgramExecutor.getAllPrograms()[selectedProgramIdx]
+      this.settings.programId = selectedProgramIdx
+      this.programTitle = selectedProgram.title
     },
     saveChanges() {
-      ProgramExecutor.saveSettings(this.settings);
-      ProgramExecutor.reinitProgram();
+      ProgramExecutor.saveSettings(this.settings)
+      ProgramExecutor.reinitProgram()
     }
   },
   mounted() {
-    this.programTitle = ProgramExecutor.selectedProgram.title;
+    this.programTitle = ProgramExecutor.selectedProgram.title
+    EventBus.$on('openDialog', () => {
+      this.showDlg = true
+    })
   }
 }
 </script>
