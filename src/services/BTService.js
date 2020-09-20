@@ -72,7 +72,6 @@ class BTServiceImpl {
         if (this.lastMessage && valueLength > 0 && value.getUint8(0) === 2 && value.getUint8(valueLength - 1) === 3) {
             let success = this.isCommandResult(this.lastMessage, value);
             if (success) {
-                console.log("valid response");
                 if (this.lastMessage === SPEED_INFO_COMMAND) {
                     let maxSpeed = value.getUint8(3);
                     let minSpeed = value.getUint8(4);
@@ -167,7 +166,8 @@ class BTServiceImpl {
     isCommandResult(command, result) {
         var success = true;
         var resultLength = result.byteLength;
-        for (var i = 0; i < command.length; i++) {
+        var compareLength = command === START_COMMAND ? 3 : command.length;
+        for (var i = 0; i < compareLength; i++) {
             if (!success) {
                 break;
             }
@@ -234,7 +234,6 @@ class BTServiceImpl {
                 setInterval(() => { thisObj.intervalHandler() }, 200);
                 EventBus.$emit("btConnected");
                 thisObj.connected = true;
-                console.log("btConnected emit");
             })
             .catch(error => { console.log(error); });
     }
