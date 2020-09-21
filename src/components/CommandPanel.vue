@@ -1,7 +1,11 @@
 <template>
-  <div class="col btn-group">
-    <div class="btn btn-secondary" data-toggle="tooltip" data-placement="top" :title="title"><i class="fas" :class="iconName"></i></div>
-    <button v-for="n in 6" v-bind:key="n" @click="changeCommand" type="button" class="btn btn-primary" :disabled="!$store.state.started">{{ n * 2 }}</button>
+  <div class="md-layout">
+    <div class="md-layout-item">
+      <div class="labelled"><i class="fas" :class="iconName"></i><md-tooltip md-direction="top">{{ title }}</md-tooltip></div>
+    </div>
+    <div class="md-layout-item" v-for="n in 6" v-bind:key="n">
+      <md-button @click="changeCommand" class="md-primary md-icon-button" :disabled="!$store.state.started">{{ n * 2 }}</md-button>
+    </div>
   </div>
 </template>
 
@@ -39,5 +43,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+.labelled {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
 </style>
