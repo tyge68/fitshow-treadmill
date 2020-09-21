@@ -1,21 +1,20 @@
 <template>
     <div class="md-layout">
       <div class="md-layout-item" :class="$store.state.started ? 'md-hide':''">
-        <md-button @click="showDialog" class="md-primary"><i class="fas fa-cogs"></i></md-button>
+        <md-button @click="showDialog" class="md-icon-button md-primary"><i class="fas fa-cogs"></i></md-button>
         <md-menu md-size="small">
-          <md-button md-menu-trigger>Small</md-button>
-
+          <md-button md-menu-trigger class="md-icon-button md-secondary"><i class="fas fa-caret-down"></i></md-button>
           <md-menu-content>
-            <md-menu-item><a class="dropdown-item" href="#/programEditor">Program Editor</a></md-menu-item>
+            <md-menu-item to="/programEditor">Program Editor</md-menu-item>
           </md-menu-content>
         </md-menu>
       </div>
-      <md-button class="md-primary" @click="startTreadmill" :disabled="$store.state.started"><i class="fas fa-play-circle"></i></md-button>
-      <md-button class="md-primary" @click="stopTreadmill" :disabled="!$store.state.started"><i class="far fa-stop-circle"></i></md-button>
-      <md-button class="md-primary" @click="startProgram" :class="$store.state.started ? '':'md-hide'" :disabled="$store.state.running"><i class="fas fa-running"></i></md-button>
-      <md-button class="md-primary" @click="togglePanels"><i class="fas fa-info-circle"></i> / <i class="fas fa-chart-bar"></i></md-button>  
-      <md-button class="md-primary" @click="enterFullscreen" :class="fullscreen ? 'md-hide':''"><i class="fas fa-expand-arrows-alt"></i></md-button>
-      <md-button class="md-primary" @click="exitFullscreen" :class="fullscreen ? '':'md-hide'"><i class="fas fa-compress"></i></md-button>
+      <md-button class="md-icon-button md-primary" @click="startTreadmill" :disabled="$store.state.started"><i class="fas fa-play-circle"></i></md-button>
+      <md-button class="md-icon-button md-primary" @click="stopTreadmill" :disabled="!$store.state.started"><i class="far fa-stop-circle"></i></md-button>
+      <md-button class="md-icon-button md-primary" @click="startProgram" :class="$store.state.started ? '':'md-hide'" :disabled="$store.state.running"><i class="fas fa-running"></i></md-button>
+      <md-button class="md-icon-button md-primary" @click="togglePanels"><i class="fas fa-info-circle"></i> / <i class="fas fa-chart-bar"></i></md-button>  
+      <md-button class="md-icon-button md-primary" @click="enterFullscreen" :class="fullscreen ? 'md-hide':''"><i class="fas fa-expand-arrows-alt"></i></md-button>
+      <md-button class="md-icon-button md-primary" @click="exitFullscreen" :class="fullscreen ? '':'md-hide'"><i class="fas fa-compress"></i></md-button>
       <SettingsDialog />
     </div>
 </template>

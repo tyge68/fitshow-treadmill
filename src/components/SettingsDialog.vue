@@ -1,60 +1,48 @@
 <template>
 <md-dialog :md-active.sync="showDlg">
   <md-dialog-title>Edit Settings</md-dialog-title>
-  <md-content>
+  <md-dialog-content>
         <form>
-          <div class="form-group row">
-            <legend class="col-form-label col-sm-4 pt-0">Running Mode</legend>
-            <div class="col-sm-4">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" v-model="settings.mode" name="mode" id="runningDefault" value="default" :checked="settings.mode === 'default'">
-                <label class="form-check-label" for="runningDefault">
-                  Default
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" v-model="settings.mode" name="mode" id="runningTime" value="time" :checked="settings.mode === 'time'">
-                <label class="form-check-label" for="runningTime">
-                  Time limit
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" v-model="settings.mode" name="mode" id="runningDistance" value="distance" :checked="settings.mode === 'distance'">
-                <label class="form-check-label" for="runningDistance">
-                  Distance limit
-                </label>
-              </div>
+          <div class="md-layout">
+            <div class="md-layout-item">
+                <label>Running Mode</label>
+                <md-radio v-model="settings.mode" name="mode" value="default" :checked="settings.mode === 'default'">Default</md-radio>
+                <md-radio v-model="settings.mode" name="mode" value="time" :checked="settings.mode === 'time'">Time limit</md-radio>
+                <md-radio v-model="settings.mode" name="mode" value="distance" :checked="settings.mode === 'distance'">Distance limit</md-radio>
             </div>
           </div>
-          <div class="form-group row" :class="{ 'md-hide': settings.mode !== 'distance' }">
-            <legend class="col-form-label col-sm-4 pt-0">Distance (km)</legend>
-            <div class="col-sm-4">
-              <select class="w-100 pl-2" v-model="settings.distancelimit" id="distanceSelect">
-                <option v-for="dist in validDistances" v-bind:key="dist" :value="dist">{{ dist }}</option>
-              </select>
+          <div class="md-layout">
+            <div class="md-layout-item" :class="{ 'md-hide': settings.mode !== 'distance' }">
+              <md-field>
+                <label for="movie">Distance (km)</label>
+                <md-select v-model="settings.distancelimit" name="distancelimit">
+                  <md-option v-for="dist in validDistances" v-bind:key="dist" :value="dist">{{ dist }}</md-option>
+                </md-select>
+              </md-field>
             </div>
           </div>
-          <div class="form-group row" :class="{ 'md-hide': settings.mode !== 'time' }">
-            <legend class="col-form-label col-sm-4 pt-0">Time (minutes)</legend>
-            <div class="col-sm-4">
-              <select class="w-100 pl-2" v-model="settings.timelimit" id="timeSelect">
-                <option v-for="time in validTimes" v-bind:key="time" :value="time">{{ time }}</option>
-              </select>
+          <div class="md-layout">
+            <div class="md-layout-item" :class="{ 'md-hide': settings.mode !== 'time' }">
+              <md-field>
+                <label for="movie">Time (minutes)</label>
+                <md-select v-model="settings.timelimit" name="timelimit">
+                  <md-option v-for="time in validTimes" v-bind:key="time" :value="time">{{ time }}</md-option>
+                </md-select>
+              </md-field>
             </div>
           </div>
-          <div class="form-group row">
-            <legend class="col-form-label col-sm-4 pt-0">Program</legend>
-            <div class="col-sm-4">
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ programTitle }}</button>
-                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                  <a @click="selectProgram" v-for="(item, index) in programs" v-bind:key="item.title" class="dropdown-item" href="#" v-bind:data-program-index="index">{{ item.title }}</a>
-                </div>
-              </div>
+          <div class="md-layout">
+            <div class="md-layout-item">
+              <md-field>
+                <label for="movie">Program</label>
+                <md-select v-model="settings.programId" name="programId">
+                  <md-option @md-selected="selectProgram" v-for="(item, index) in programs" :key="index" :value="index">{{ item.title }}</md-option>
+                </md-select>
+              </md-field>
             </div>
           </div>
         </form>
-  </md-content>
+  </md-dialog-content>
   <md-dialog-actions>
     <md-button class="md-primary" @click="showDlg = false">Close</md-button>
     <md-button class="md-primary" @click="saveChanges">Save</md-button>
@@ -70,7 +58,7 @@ export default {
   name: 'SettingsDialog',
   data() {
     return {
-      showDlg: true,
+      showDlg: false,
       programTitle: 'Select Program',
       programs: ProgramExecutor.getAllPrograms(),
       settings: ProgramExecutor.getSettings(),
@@ -79,15 +67,15 @@ export default {
     }
   },
   methods: {
-    selectProgram(event) {
-      let selectedProgramIdx = event.target.dataset.programIndex
+    selectProgram(value) {
+      let selectedProgramIdx = value
       let selectedProgram = ProgramExecutor.getAllPrograms()[selectedProgramIdx]
-      this.settings.programId = selectedProgramIdx
       this.programTitle = selectedProgram.title
     },
     saveChanges() {
       ProgramExecutor.saveSettings(this.settings)
       ProgramExecutor.reinitProgram()
+      this.showDlg = false
     }
   },
   mounted() {
@@ -101,5 +89,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+  .md-radio {
+    display: flex;
+  }
 </style>
