@@ -1,12 +1,12 @@
 <template>
 <div>
   <div class="md-layout">
-      <div class="md-layout-item"><md-icon>speed</md-icon></div>
-      <div class="md-layout-item"><md-icon>landscape</md-icon></div>
-      <div class="md-layout-item">&#9651;<md-icon>speed</md-icon></div>
-      <div class="md-layout-item"><md-icon>add_road</md-icon></div>
-      <div class="md-layout-item"><md-icon>more_time</md-icon></div>
-      <div class="md-layout-item"><md-icon>local_fire_department</md-icon></div>
+      <div class="md-layout-item"><md-icon>speed<md-tooltip md-direction="right">Current Speed (km/h)</md-tooltip></md-icon></div>
+      <div class="md-layout-item"><md-icon>landscape<md-tooltip md-direction="bottom">Current Incline (%)</md-tooltip></md-icon></div>
+      <div class="md-layout-item">&#9651;<md-icon>speed<md-tooltip md-direction="bottom">Current Average Speed (km/h)</md-tooltip></md-icon></div>
+      <div class="md-layout-item"><md-icon>add_road<md-tooltip md-direction="bottom">Total Distance (km)</md-tooltip></md-icon></div>
+      <div class="md-layout-item"><md-icon>more_time<md-tooltip md-direction="bottom">Total Time (hh:mm:ss)</md-tooltip></md-icon></div>
+      <div class="md-layout-item"><md-icon>local_fire_department<md-tooltip md-direction="left">Total Calories</md-tooltip></md-icon></div>
   </div>
   <div class="md-layout">
       <div class="md-layout-item">{{ speed }}</div>

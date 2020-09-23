@@ -21,12 +21,12 @@
       </div>
       <div class="md-layout" :class="$store.state.started ? '':'md-hide'">
         <div class="md-layout-item">
-          <CommandPanel title="Incline Level" iconName="fa-mountain" commandType="incline" />
+          <CommandPanel title="Incline Level" iconName="landscape" commandType="incline" />
         </div>
       </div>
       <div class="md-layout" :class="$store.state.started ? '':'md-hide'">
         <div class="md-layout-item">
-          <CommandPanel title="Speed Level" iconName="fa-tachometer-alt" commandType="speed" />
+          <CommandPanel title="Speed Level" iconName="speed" commandType="speed" />
         </div>
       </div>
     </md-app-content>
