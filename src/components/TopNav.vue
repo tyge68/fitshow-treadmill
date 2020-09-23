@@ -1,59 +1,70 @@
 <template>
-    <div class="container-fluid">
-      <div class="btn-group" :class="$store.state.started ? 'd-none':''">
-        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editSettingsDialog"><i class="fas fa-cogs"></i></button>
-        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span class="sr-only">Toggle Dropdown</span>
-        </button>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="#/programEditor">Program Editor</a>
+    <div class="md-toolbar-row">
+      <div class="md-toolbar-section-start">
+        <div :class="$store.state.started ? 'md-hide':''">
+          <md-menu md-size="small">
+            <md-button md-menu-trigger class="md-icon-button md-secondary"><md-icon>menu</md-icon></md-button>
+            <md-menu-content>
+              <md-menu-item to="/programEditor">Program Editor</md-menu-item>
+            </md-menu-content>
+          </md-menu>
+          <md-button @click="showDialog" class="md-icon-button md-primary"><md-icon>settings</md-icon></md-button>
+          <SettingsDialog />
         </div>
+        <md-button class="md-icon-button md-primary" @click="startTreadmill" :disabled="$store.state.started"><md-icon>play_arrow</md-icon></md-button>
+        <md-button class="md-icon-button md-accent" @click="stopTreadmill" :disabled="!$store.state.started"><md-icon>stop</md-icon></md-button>
+        <md-button class="md-icon-button md-primary" @click="startProgram" :class="$store.state.started ? '':'md-hide'" :disabled="$store.state.running"><md-icon>directions_run</md-icon></md-button>
+        <md-button class="md-primary" @click="togglePanels"><md-icon>info</md-icon> / <md-icon>bar_chart</md-icon></md-button>
       </div>
-      <div class="btn-group">
-        <button @click="startTreadmill" type="button" class="btn btn-primary" :disabled="$store.state.started"><i class="fas fa-play-circle"></i></button>
-        <button @click="stopTreadmill" type="button" class="btn btn-primary" :disabled="!$store.state.started"><i class="far fa-stop-circle"></i></button>
-        <button @click="startProgram" type="button" class="btn btn-primary" :class="$store.state.started ? '':'d-none'" :disabled="$store.state.running"><i class="fas fa-running"></i></button>
-        <button @click="togglePanels" type="button" class="btn btn-primary"><i class="fas fa-info-circle"></i> / <i class="fas fa-chart-bar"></i></button>  
-        <button @click="enterFullscreen" type="button" class="btn btn-primary" :class="fullscreen ? 'd-none':''"><i class="fas fa-expand-arrows-alt"></i></button>
-        <button @click="exitFullscreen" type="button" class="btn btn-primary" :class="fullscreen ? '':'d-none'"><i class="fas fa-compress"></i></button>
+      <div class="md-toolbar-section-end">
+        <md-button class="md-icon-button md-primary" @click="enterFullscreen" :class="fullscreen ? 'md-hide':''"><md-icon>fullscreen</md-icon></md-button>
+        <md-button class="md-icon-button md-primary" @click="exitFullscreen" :class="fullscreen ? '':'md-hide'"><md-icon>fullscreen_exit</md-icon></md-button>
       </div>
     </div>
 </template>
 
 <script>
-import { ProgramExecutor } from '../services/ProgramExecutor';
-import { BTService, START_COMMAND, STOP_COMMAND } from '../services/BTService';
+import { ProgramExecutor } from '../services/ProgramExecutor'
+import SettingsDialog from './SettingsDialog.vue'
+import { BTService, START_COMMAND, STOP_COMMAND } from '../services/BTService'
+import { EventBus } from '../event-bus'
 
 export default {
   name: 'TopNav',
   data() {
     return {
       fullscreen: false
-    };
+    }
+  },
+  components: {
+      SettingsDialog
   },
   methods: {
+    showDialog() {
+      EventBus.$emit('openDialog')
+    },
     startTreadmill() {
-      BTService.addMessage(START_COMMAND);
+      BTService.addMessage(START_COMMAND)
     },
     stopTreadmill() {
-      BTService.addMessage(STOP_COMMAND);
+      BTService.addMessage(STOP_COMMAND)
     },
     startProgram() {
       if (!ProgramExecutor.isExecuting() && BTService.isRunning()) {
-        ProgramExecutor.start();
-        this.running = true;  
+        ProgramExecutor.start()
+        this.running = true  
       }
     },
     togglePanels() {
-      this.$store.commit('togglePanels');
+      this.$store.commit('togglePanels')
     },
     enterFullscreen() {
-      document.getElementsByTagName("body")[0].requestFullscreen();
-      this.fullscreen = true;
+      document.getElementsByTagName("body")[0].requestFullscreen()
+      this.fullscreen = true
     },
     exitFullscreen() {
-      document.exitFullscreen();
-      this.fullscreen = false;
+      document.exitFullscreen()
+      this.fullscreen = false
     }
   }
 }

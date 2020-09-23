@@ -1,37 +1,36 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col">
+  <md-app>
+    <md-app-toolbar>
           <TopNav />
-      </div>
-    </div>
-    <div class="row">
-      <div class="col " id="connectedPanel">
-        <ProgressionInfo/>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <div :class='showChartPanel'>
-          <Chart />
-        </div>
-        <div :class='showStatusPanel'>
-          <StatusInfo />
+    </md-app-toolbar>
+    <md-app-content>
+      <div class="md-layout">
+        <div class="md-layout-item">
+          <ProgressionInfo/>
         </div>
       </div>
-    </div>
-    <div class="row" :class="$store.state.started ? '':'d-none'">
-      <div class="col px-0">
-        <CommandPanel title="Incline Level" iconName="fa-mountain" commandType="incline" />
+      <div class="md-layout">
+        <div class="md-layout-item">
+          <div :class='showChartPanel'>
+            <Chart />
+          </div>
+          <div :class='showStatusPanel'>
+            <StatusInfo />
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="row" :class="$store.state.started ? '':'d-none'">
-      <div class="col px-0">
-        <CommandPanel title="Speed Level" iconName="fa-tachometer-alt" commandType="speed" />
+      <div class="md-layout" :class="$store.state.started && !$store.state.running ? '':'md-hide'">
+        <div class="md-layout-item">
+          <CommandPanel title="Incline Level" iconName="landscape" commandType="incline" />
+        </div>
       </div>
-    </div>
-    <SettingsDialog />
-  </div>
+      <div class="md-layout" :class="$store.state.started && !$store.state.running ? '':'md-hide'">
+        <div class="md-layout-item">
+          <CommandPanel title="Speed Level" iconName="speed" commandType="speed" />
+        </div>
+      </div>
+    </md-app-content>
+  </md-app>
 </template>
 
 <script>
@@ -40,7 +39,6 @@ import StatusInfo from '../components/StatusInfo.vue'
 import ProgressionInfo from '../components/ProgressionInfo.vue'
 import CommandPanel from '../components/CommandPanel.vue'
 import Chart from '../components/Chart.vue'
-import SettingsDialog from '../components/SettingsDialog.vue'
 
 export default {
   name: 'Home',
@@ -49,17 +47,16 @@ export default {
       StatusInfo,
       ProgressionInfo,
       CommandPanel,
-      Chart,
-      SettingsDialog
+      Chart
   },
   computed: {
       showChartPanel() {
         let toggleCountMod = this.$store.state.toggleCount % 2;
-        return toggleCountMod === 0 ? 'd-none':'';
+        return toggleCountMod === 0 ? 'md-hide':'';
       },
       showStatusPanel() {
         let toggleCountMod = this.$store.state.toggleCount % 2;
-        return toggleCountMod === 1 ? 'd-none':''
+        return toggleCountMod === 1 ? 'md-hide':''
       }
   },
   created() {

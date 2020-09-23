@@ -122,13 +122,15 @@ class ProgramExecutorImpl {
             stepProgressRatio = 0,
             stepRemainingTime = 0
 
-        if (BTService.isRunning() && this.isExecuting()) {
+        if (BTService.isRunning()&& this.isExecuting()) {
             let currentProgramDuration = Math.round((Date.now() - this.programStartTime) / 1000)
             programProgressRatio = Math.round( currentProgramDuration * 100 / this.programDuration)
             programRemainingTime = moment.duration(this.programDuration - currentProgramDuration, 'seconds').format('H:mm:ss')
             let currentDuration = (Date.now() - this.currentStepStartTime) / 1000
             stepProgressRatio = Math.round( currentDuration * 100 / this.currentStepDuration)
             stepRemainingTime = Math.round(this.currentStepDuration - currentDuration)
+        } else {
+            this.stop()
         }
         EventBus.$emit('trainingProgression', {
             program: {
@@ -157,7 +159,9 @@ class ProgramExecutorImpl {
     }
 
     stop() {
-        BTService.addMessage(STOP_COMMAND)
+        if (BTService.isRunning()) {
+            BTService.addMessage(STOP_COMMAND)
+        }
         clearInterval(this.programInterval)
         clearInterval(this.progressInterval)
         this.programInterval = null

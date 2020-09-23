@@ -157,7 +157,6 @@ class BTServiceImpl {
         try {
             c_serialPortWrite.writeValue(commandMerged);
         } catch(err) {
-            console.log(err);
             this.connected = false;
             EventBus.$emit("btDisconnected");
         }

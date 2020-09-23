@@ -1,22 +1,22 @@
 <template>
-  <table class="table">
-    <tr>
-      <td><i class="fas fa-tachometer-alt" data-toggle="tooltip" title="Current Speed (km/h)" /></td>
-      <td><i class="fas fa-mountain" data-toggle="tooltip" title="Current Incline (%)"/></td>
-      <td>&#9651;<i class="fas fa-tachometer-alt" data-toggle="tooltip" title="Average Speed (km/h)"/></td>
-      <td><i class="fas fa-road" data-toggle="tooltip" title="Total distance (meters)"/></td>
-      <td><i class="fas fa-hourglass-half" data-toggle="tooltip" title="Total time"/></td>
-      <td><i class="fas fa-fire-alt" data-toggle="tooltip" title="Total calories burned"/></td>
-    </tr>
-    <tr>
-      <td id="speed">{{ speed }}</td>
-      <td id="incline">{{ incline }}</td>
-      <td id="avgSpeed">{{ avgSpeed }}</td>
-      <td id="totalDistance">{{ totalDistance }}</td>
-      <td id="totalTime">{{ totalTime }}</td>
-      <td id="totalCalories">{{ totalCalories }}</td>
-    </tr>
-  </table>
+<div>
+  <div class="md-layout">
+      <div class="md-layout-item"><md-icon>speed<md-tooltip md-direction="right">Current Speed (km/h)</md-tooltip></md-icon></div>
+      <div class="md-layout-item"><md-icon>landscape<md-tooltip md-direction="bottom">Current Incline (%)</md-tooltip></md-icon></div>
+      <div class="md-layout-item">&#9651;<md-icon>speed<md-tooltip md-direction="bottom">Current Average Speed (km/h)</md-tooltip></md-icon></div>
+      <div class="md-layout-item"><md-icon>add_road<md-tooltip md-direction="bottom">Total Distance (km)</md-tooltip></md-icon></div>
+      <div class="md-layout-item"><md-icon>more_time<md-tooltip md-direction="bottom">Total Time (hh:mm:ss)</md-tooltip></md-icon></div>
+      <div class="md-layout-item"><md-icon>local_fire_department<md-tooltip md-direction="left">Total Calories</md-tooltip></md-icon></div>
+  </div>
+  <div class="md-layout">
+      <div class="md-layout-item">{{ speed }}</div>
+      <div class="md-layout-item">{{ incline }}</div>
+      <div class="md-layout-item">{{ avgSpeed }}</div>
+      <div class="md-layout-item">{{ totalDistance }}</div>
+      <div class="md-layout-item">{{ totalTime }}</div>
+      <div class="md-layout-item">{{ totalCalories }}</div>
+  </div>
+</div> 
 </template>
 
 <script>
