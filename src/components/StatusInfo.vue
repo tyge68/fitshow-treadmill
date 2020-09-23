@@ -1,12 +1,12 @@
 <template>
 <div>
   <div class="md-layout">
-      <div class="md-layout-item"><i class="fas fa-tachometer-alt" data-toggle="tooltip" title="Current Speed (km/h)" /></div>
-      <div class="md-layout-item"><i class="fas fa-mountain" data-toggle="tooltip" title="Current Incline (%)"/></div>
-      <div class="md-layout-item">&#9651;<i class="fas fa-tachometer-alt" data-toggle="tooltip" title="Average Speed (km/h)"/></div>
-      <div class="md-layout-item"><i class="fas fa-road" data-toggle="tooltip" title="Total distance (meters)"/></div>
-      <div class="md-layout-item"><i class="fas fa-hourglass-half" data-toggle="tooltip" title="Total time"/></div>
-      <div class="md-layout-item"><i class="fas fa-fire-alt" data-toggle="tooltip" title="Total calories burned"/></div>
+      <div class="md-layout-item"><md-icon>speed</md-icon></div>
+      <div class="md-layout-item"><md-icon>landscape</md-icon></div>
+      <div class="md-layout-item">&#9651;<md-icon>speed</md-icon></div>
+      <div class="md-layout-item"><md-icon>add_road</md-icon></div>
+      <div class="md-layout-item"><md-icon>more_time</md-icon></div>
+      <div class="md-layout-item"><md-icon>local_fire_department</md-icon></div>
   </div>
   <div class="md-layout">
       <div class="md-layout-item">{{ speed }}</div>

@@ -1,7 +1,7 @@
 <template>
   <div class="md-layout">
     <div class="md-layout-item">
-      <div class="labelled"><i class="fas" :class="iconName"></i><md-tooltip md-direction="top">{{ title }}</md-tooltip></div>
+      <div class="labelled"><md-icon>{{ iconName }}"<md-tooltip md-direction="top">{{ title }}</md-tooltip></md-icon></div>
     </div>
     <div class="md-layout-item" v-for="n in 6" v-bind:key="n">
       <md-button @click="changeCommand" class="md-primary md-icon-button" :disabled="!$store.state.started">{{ n * 2 }}</md-button>

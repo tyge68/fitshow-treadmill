@@ -1,37 +1,35 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col">
-        <button @click="backHome" type="button" class="btn btn-secondary"><i class="fas fa-arrow-left"></i></button>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-2">
-        <ProgramsNav :programs="programs" @selectProgram="selectProgram" @addProgram="addProgram" @deleteProgram="deleteProgram" />
-      </div>
-      <div class="col-md-10" v-if="$v.selectedProgram">
-        <EditorFormPanel :selectedProgram="$v.selectedProgram" :isNew="isNew" @addStep="addStep" @removeStep="removeStep" @saveForm="save" @resetForm="reset" />
-      </div>
-    </div>
-    <div class="modal" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Error occurred</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Please make sure to save or reset this program before switching to another one.</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
+  <md-app md-mode="fixed">
+    <md-app-toolbar class="md-primary">
+        <md-button class="md-icon-button" @click="showNavigation = true">
+          <md-icon>menu</md-icon>
+        </md-button>
+        <md-button @click="backHome" class="md-icon-button md-primary"><md-icon>chevron_left</md-icon></md-button>
+        <div class="md-toolbar-section-end" v-if="!readOnly">
+          <md-button class="md-icon-button" @click="save">
+            <md-icon>save</md-icon>
+          </md-button>
+          <md-button v-if="!isNew" class="md-icon-button" @click="reset">
+            <md-icon>undo</md-icon>
+          </md-button>
         </div>
-      </div>
-    </div>
-  </div>
+        <span class="md-title">Training Programs Editor</span>
+    </md-app-toolbar>
+    <md-app-drawer :md-active.sync="showNavigation" md-swipeable>
+        <md-toolbar class="md-primary" md-elevation="0">
+          <span class="md-title">Training Programs</span>
+        </md-toolbar>
+        <ProgramsNav :programs="programs" @selectProgram="selectProgram" @addProgram="addProgram" @deleteProgram="deleteProgram" />
+        <md-button @click="addProgram" class="md-primary">Add</md-button>
+    </md-app-drawer>
+    <md-app-content>
+      <EditorFormPanel :selectedProgram="$v.selectedProgram" :isNew="isNew" @addStep="addStep" @removeStep="removeStep" @saveForm="save" @resetForm="reset" />
+      <md-dialog-alert
+        :md-active.sync="displayAlert"
+        md-title="Operation Aborted"
+        md-content="Please make sure to save or reset this program before switching to another one." />
+    </md-app-content>
+  </md-app>
 </template>
 
 <script>
@@ -45,6 +43,8 @@ export default {
   data() {
     return {
       isNew: false,
+      displayAlert: false,
+      showNavigation: false,
       programs: ProgramExecutor.getAllPrograms(),
       selectedProgram: ProgramExecutor.getProgram(0) || false,
       selectedIdx: 0
@@ -54,23 +54,36 @@ export default {
       ProgramsNav,
       EditorFormPanel
   },  
+  created() {
+    if (!this.$store.state.connected) {
+      this.$router.push({ path: "/" });
+    }
+  },
+  computed: {
+      readOnly() {
+        return this.$v.selectedProgram.$model.readOnly
+      }
+  },
   methods: {
     selectProgram(index) {
       if (!this.$v.$anyDirty) {
           this.selectedIdx = index
           this.selectedProgram = ProgramExecutor.getProgram(this.selectedIdx)
+          this.showNavigation = false
+          this.$nextTick(() => { this.$v.$reset() })
       } else {
-          window.jQuery(this.errorDialog).modal({ show: true })
+          this.displayAlert = true
       }
     },
     addProgram() {
       if (this.$v && this.$v.$anyDirty) {
-          window.jQuery(this.errorDialog).modal({ show: true })
+          this.displayAlert = true
       } else {
           this.selectedIdx = ProgramExecutor.createNew()
           this.programs = ProgramExecutor.getAllPrograms()
           this.selectedProgram = ProgramExecutor.getProgram(this.selectedIdx)
           this.isNew = true
+          this.showNavigation = false
           if (this.$v) {
           this.$nextTick(() => { this.$v.$touch() })
           }
@@ -80,25 +93,25 @@ export default {
       if (!this.$v.$anyDirty) {
         this.$router.push({ path: "/home" })
       } else {
-        window.jQuery(this.errorDialog).modal({ show: true })
+        this.displayAlert = true
       }
     },
     deleteProgram(index) {
       if (!this.$v.$anyDirty) {
-          let selectedIdx = index
-          ProgramExecutor.deleteProgram(selectedIdx)
-          this.programs = ProgramExecutor.getAllPrograms()
-          let programsLength = this.programs.length
-          if (this.selectedIdx >= programsLength) {
+        let selectedIdx = index
+        ProgramExecutor.deleteProgram(selectedIdx)
+        this.programs = ProgramExecutor.getAllPrograms()
+        let programsLength = this.programs.length
+        if (this.selectedIdx >= programsLength) {
           this.selectedIdx = programsLength - 1
-          }
-          if (this.selectedIdx < 0) {
+        }
+        if (this.selectedIdx < 0) {
           this.selectedProgram = false
-          } else {
+        } else {
           this.selectedProgram = ProgramExecutor.getProgram(this.selectedIdx)
-          }
+        }
       } else {
-          window.jQuery(this.errorDialog).modal({ show: true })
+        this.displayAlert = true
       }
     },
     save() {
@@ -118,13 +131,6 @@ export default {
       let removedIndex = index //event.target.parentElement.parentElement.parentElement.dataset.index
       this.selectedProgram.steps.splice(removedIndex, 1)
       event.preventDefault()
-    }
-  },
-  mounted() {
-    if (this.selectedProgram) {
-      this.$nextTick(() => {
-        this.errorDialog = this.$el.getElementsByClassName("modal")[0]
-      })
     }
   },
   validations: {
@@ -154,6 +160,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.md-app {
+  max-height: 100vh;
+}
+
 canvas {
  min-width: 383px; 
  min-height: 212px; 
