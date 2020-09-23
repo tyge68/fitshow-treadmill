@@ -1,21 +1,25 @@
 <template>
-    <div class="md-layout">
-      <div class="md-layout-item" :class="$store.state.started ? 'md-hide':''">
-        <md-menu md-size="small">
-          <md-button md-menu-trigger class="md-icon-button md-secondary"><md-icon>menu</md-icon></md-button>
-          <md-menu-content>
-            <md-menu-item to="/programEditor">Program Editor</md-menu-item>
-          </md-menu-content>
-        </md-menu>
-        <md-button @click="showDialog" class="md-icon-button md-primary"><md-icon>settings</md-icon></md-button>
+    <div class="md-toolbar-row">
+      <div class="md-toolbar-section-start">
+        <div :class="$store.state.started ? 'md-hide':''">
+          <md-menu md-size="small">
+            <md-button md-menu-trigger class="md-icon-button md-secondary"><md-icon>menu</md-icon></md-button>
+            <md-menu-content>
+              <md-menu-item to="/programEditor">Program Editor</md-menu-item>
+            </md-menu-content>
+          </md-menu>
+          <md-button @click="showDialog" class="md-icon-button md-primary"><md-icon>settings</md-icon></md-button>
+          <SettingsDialog />
+        </div>
+        <md-button class="md-icon-button md-primary" @click="startTreadmill" :disabled="$store.state.started"><md-icon>play_arrow</md-icon></md-button>
+        <md-button class="md-icon-button md-accent" @click="stopTreadmill" :disabled="!$store.state.started"><md-icon>stop</md-icon></md-button>
+        <md-button class="md-icon-button md-primary" @click="startProgram" :class="$store.state.started ? '':'md-hide'" :disabled="$store.state.running"><md-icon>directions_run</md-icon></md-button>
+        <md-button class="md-primary" @click="togglePanels"><md-icon>info</md-icon> / <md-icon>bar_chart</md-icon></md-button>
       </div>
-      <md-button class="md-icon-button md-primary" @click="startTreadmill" :disabled="$store.state.started"><md-icon>play_arrow</md-icon></md-button>
-      <md-button class="md-icon-button md-primary" @click="stopTreadmill" :disabled="!$store.state.started"><md-icon>stop</md-icon></md-button>
-      <md-button class="md-icon-button md-primary" @click="startProgram" :class="$store.state.started ? '':'md-hide'" :disabled="$store.state.running"><md-icon>directions_run</md-icon></md-button>
-      <md-button class="md-primary" @click="togglePanels"><md-icon>info</md-icon> / <md-icon>bar_chart</md-icon></md-button>
-      <md-button class="md-icon-button md-primary" @click="enterFullscreen" :class="fullscreen ? 'md-hide':''"><md-icon>fullscreen</md-icon></md-button>
-      <md-button class="md-icon-button md-primary" @click="exitFullscreen" :class="fullscreen ? '':'md-hide'"><md-icon>fullscreen_exit</md-icon></md-button>
-      <SettingsDialog />
+      <div class="md-toolbar-section-end">
+        <md-button class="md-icon-button md-primary" @click="enterFullscreen" :class="fullscreen ? 'md-hide':''"><md-icon>fullscreen</md-icon></md-button>
+        <md-button class="md-icon-button md-primary" @click="exitFullscreen" :class="fullscreen ? '':'md-hide'"><md-icon>fullscreen_exit</md-icon></md-button>
+      </div>
     </div>
 </template>
 

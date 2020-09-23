@@ -19,12 +19,12 @@
           </div>
         </div>
       </div>
-      <div class="md-layout" :class="$store.state.started ? '':'md-hide'">
+      <div class="md-layout" :class="$store.state.started && !$store.state.running ? '':'md-hide'">
         <div class="md-layout-item">
           <CommandPanel title="Incline Level" iconName="landscape" commandType="incline" />
         </div>
       </div>
-      <div class="md-layout" :class="$store.state.started ? '':'md-hide'">
+      <div class="md-layout" :class="$store.state.started && !$store.state.running ? '':'md-hide'">
         <div class="md-layout-item">
           <CommandPanel title="Speed Level" iconName="speed" commandType="speed" />
         </div>

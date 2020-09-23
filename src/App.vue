@@ -26,7 +26,7 @@ export default {
   border: 1px solid rgba(#000, .12);
 }
 
-html {
+body {
   background-color: #ffffff;
 }
 </style>
