@@ -5,6 +5,8 @@
           <md-icon>menu</md-icon>
         </md-button>
         <md-button @click="backHome" class="md-icon-button md-primary"><md-icon>chevron_left</md-icon></md-button>
+        <md-button @click="copyPrograms" class="md-icon-button md-primary"><md-icon>content_copy</md-icon></md-button>
+        <md-button @click="pastePrograms" class="md-icon-button md-primary"><md-icon>content_paste</md-icon></md-button>
         <div class="md-toolbar-section-end" v-if="!readOnly">
           <md-button class="md-icon-button" @click="save">
             <md-icon>save</md-icon>
@@ -37,6 +39,23 @@ import { ProgramExecutor } from '../services/ProgramExecutor'
 import ProgramsNav from '../components/ProgramsNav.vue'
 import EditorFormPanel from '../components/EditorFormPanel.vue'
 import { required, minLength, between } from 'vuelidate/lib/validators'
+
+function copyStringToClipboard (str) {
+   // Create new element
+   var el = document.createElement('textarea');
+   // Set value (string to be copied)
+   el.value = str;
+   // Set non-editable to avoid focus and move outside of view
+   el.setAttribute('readonly', '');
+   el.style = {position: 'absolute', left: '-9999px'};
+   document.body.appendChild(el);
+   // Select text inside element
+   el.select();
+   // Copy text to clipboard
+   document.execCommand('copy');
+   // Remove temporary element
+   document.body.removeChild(el);
+}
 
 export default {
   name: 'ProgramEditor',
@@ -94,6 +113,26 @@ export default {
         this.$router.push({ path: "/home" })
       } else {
         this.displayAlert = true
+      }
+    },
+    copyPrograms() {
+      copyStringToClipboard(JSON.stringify(ProgramExecutor.getAllPrograms().filter( p => !p.readOnly),"",2))
+    },
+    async pastePrograms() {
+      if (this.$v && this.$v.$anyDirty) {
+          this.displayAlert = true
+      } else {
+        const text = await navigator.clipboard.readText();
+        if (text && text.length > 0) {
+          try {
+            let customPrograms = JSON.parse(text)
+            ProgramExecutor.importPrograms(customPrograms)
+            this.programs = ProgramExecutor.getAllPrograms()
+            this.selectProgram(0)
+          } catch (err) {
+            console.log("Cannot parse json from clipboard")
+          }
+        }
       }
     },
     deleteProgram(index) {

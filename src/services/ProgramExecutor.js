@@ -47,6 +47,14 @@ class ProgramExecutorImpl {
         this.currentStepDuration = newDuration
     }
 
+    importPrograms(programs) {
+        // verify programs
+        // then impports
+        this.allPrograms = JSON.parse(JSON.stringify(ALL_PROGRAMS))
+        programs.forEach(p => this.allPrograms.push(p))
+        this.savePrograms()
+    }
+
     loadPrograms() {
         let localStorage = window.localStorage
         let storedPrograms = localStorage.getItem('trainingPrograms')
