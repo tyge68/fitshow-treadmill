@@ -5,8 +5,16 @@
           <md-icon>menu</md-icon>
         </md-button>
         <md-button @click="backHome" class="md-icon-button md-primary"><md-icon>chevron_left</md-icon></md-button>
-        <md-button @click="copyPrograms" class="md-icon-button md-primary"><md-icon>content_copy</md-icon></md-button>
-        <md-button @click="pastePrograms" class="md-icon-button md-primary"><md-icon>content_paste</md-icon></md-button>
+        <md-button @click="importFile" class="md-icon-button md-primary">
+          <md-icon>cloud_upload</md-icon>
+          <md-tooltip md-direction="bottom">Import custom training programs from file</md-tooltip>
+        </md-button>
+        <md-button @click="saveAsFile" class="md-icon-button md-primary">
+          <md-icon>archive</md-icon>
+          <md-tooltip md-direction="bottom">Export custom training programs to file</md-tooltip>
+        </md-button>
+        <input class="md-hide" type="file" name="file" @change="changedFile" />
+        <a class="save-as-file-link"></a>
         <div class="md-toolbar-section-end" v-if="!readOnly">
           <md-button class="md-icon-button" @click="save">
             <md-icon>save</md-icon>
@@ -39,23 +47,6 @@ import { ProgramExecutor } from '../services/ProgramExecutor'
 import ProgramsNav from '../components/ProgramsNav.vue'
 import EditorFormPanel from '../components/EditorFormPanel.vue'
 import { required, minLength, between } from 'vuelidate/lib/validators'
-
-function copyStringToClipboard (str) {
-   // Create new element
-   var el = document.createElement('textarea');
-   // Set value (string to be copied)
-   el.value = str;
-   // Set non-editable to avoid focus and move outside of view
-   el.setAttribute('readonly', '');
-   el.style = {position: 'absolute', left: '-9999px'};
-   document.body.appendChild(el);
-   // Select text inside element
-   el.select();
-   // Copy text to clipboard
-   document.execCommand('copy');
-   // Remove temporary element
-   document.body.removeChild(el);
-}
 
 export default {
   name: 'ProgramEditor',
@@ -115,24 +106,41 @@ export default {
         this.displayAlert = true
       }
     },
-    copyPrograms() {
-      copyStringToClipboard(JSON.stringify(ProgramExecutor.getAllPrograms().filter( p => !p.readOnly),"",2))
+    importFile() {
+      this.$el.querySelector("input[type=\"file\"]").click()
     },
-    async pastePrograms() {
+    async changedFile(event) {
+      let droppedFiles = event.target.files
+      if (droppedFiles && droppedFiles.length === 1) {
+        let text = await droppedFiles[0].text()
+        this.importProgramsFromText(text)
+      }
+    },
+    importProgramsFromText(text) {
+      if (text && text.length > 0) {
+        try {
+          let customPrograms = JSON.parse(text)
+          ProgramExecutor.importPrograms(customPrograms)
+          this.programs = ProgramExecutor.getAllPrograms()
+          this.selectProgram(0)
+        } catch (err) {
+          console.log("Cannot parse json from clipboard")
+        }
+      }
+    },
+    saveAsFile() {
       if (this.$v && this.$v.$anyDirty) {
           this.displayAlert = true
       } else {
-        const text = await navigator.clipboard.readText();
-        if (text && text.length > 0) {
-          try {
-            let customPrograms = JSON.parse(text)
-            ProgramExecutor.importPrograms(customPrograms)
-            this.programs = ProgramExecutor.getAllPrograms()
-            this.selectProgram(0)
-          } catch (err) {
-            console.log("Cannot parse json from clipboard")
-          }
-        }
+          let customPrograms = ProgramExecutor.getAllPrograms().filter( p => !p.readOnly),
+              json = JSON.stringify(customPrograms, null, 2),
+              blob = new Blob([json], {type: "octet/stream"}),
+              url = window.URL.createObjectURL(blob)
+          var a = this.$el.querySelector(".save-as-file-link")
+          a.href = url;
+          a.download = "custom_training_programs.json";
+          a.click();
+          window.URL.revokeObjectURL(url);
       }
     },
     deleteProgram(index) {
@@ -201,6 +209,14 @@ export default {
 <style scoped>
 .md-app {
   max-height: 100vh;
+}
+
+.md-hide {
+  display: none;
+}
+
+.save-as-file-link {
+  display: none;
 }
 
 canvas {
