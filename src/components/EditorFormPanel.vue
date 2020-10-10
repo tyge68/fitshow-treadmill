@@ -57,7 +57,7 @@
   </md-tab>
   <md-tab md-label="Preview" md-icon="bar_chart">
     <div class="md-layout">
-        <EditorChartPreview :steps="steps" />
+        <EditorChartPreview :steps="steps" @stepsUpdated="updatedSteps" :readOnly="readOnly"/>
     </div>
   </md-tab>
 </md-tabs>
@@ -83,13 +83,16 @@ export default {
   },
   computed: {
       readOnly() {
-        return this.selectedProgram.$model.readOnly
+        return this.selectedProgram.$model.readOnly ? true : false
       },
       steps() {
         return this.selectedProgram.$model.steps
       }
   },
   methods: {
+      updatedSteps(steps) {
+        this.selectedProgram.$model.steps = steps
+      },
       removeStep(event) {
         this.$emit('removeStep')
         event.preventDefault()
