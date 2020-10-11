@@ -16,7 +16,7 @@
               <md-field>
                 <label for="movie">Distance (km)</label>
                 <md-select v-model="settings.distancelimit" name="distancelimit">
-                  <md-option v-for="dist in validDistances" v-bind:key="dist" :value="dist">{{ dist }}</md-option>
+                  <md-option v-for="(dist, index) in validDistances" v-bind:key="index" :value="dist">{{ dist }}</md-option>
                 </md-select>
               </md-field>
             </div>
@@ -26,7 +26,7 @@
               <md-field>
                 <label for="movie">Time (minutes)</label>
                 <md-select v-model="settings.timelimit" name="timelimit">
-                  <md-option v-for="time in validTimes" v-bind:key="time" :value="time">{{ time }}</md-option>
+                  <md-option v-for="(time, index) in validTimes" v-bind:key="index" :value="time">{{ time }}</md-option>
                 </md-select>
               </md-field>
             </div>
@@ -34,7 +34,17 @@
           <div class="md-layout">
             <div class="md-layout-item">
               <md-field>
-                <label for="movie">Program</label>
+                <label>Loops</label>
+                <md-select v-model="settings.loops" name="loops">
+                  <md-option v-for="(n, index) in validLoops" :key="index" :value="n">{{ n }}</md-option>
+                </md-select>
+              </md-field>
+            </div>
+          </div>
+          <div class="md-layout">
+            <div class="md-layout-item">
+              <md-field>
+                <label>Program</label>
                 <md-select v-model="settings.programId" name="programId">
                   <md-option @md-selected="selectProgram" v-for="(item, index) in programs" :key="index" :value="index">{{ item.title }}</md-option>
                 </md-select>
@@ -62,6 +72,7 @@ export default {
       programTitle: 'Select Program',
       programs: ProgramExecutor.getAllPrograms(),
       settings: ProgramExecutor.getSettings(),
+      validLoops: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
       validDistances: [ 1, 2, 3, 5, 10, 15, 30 ],
       validTimes: [ 5, 10, 30, 45, 60, 90 ]
     }

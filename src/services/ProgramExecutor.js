@@ -210,7 +210,10 @@ class ProgramExecutorImpl {
         let programQueue = this.programQueue
         if (this.selectedProgram) {
             this.currentStepDuration = this.selectedProgram.stepDuration
-            this.selectedProgram.steps.forEach(step => programQueue.push(step))
+            for (var n = 0; n < this.allSettings.loops; n++) {
+                // copy n time the program steps to make it a loop
+                this.selectedProgram.steps.forEach(step => programQueue.push(step))
+            }
             this.scaleForSettings()
             this.programDuration = this.selectedProgram ? this.currentStepDuration * this.selectedProgram.steps.length : 0
         }
