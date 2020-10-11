@@ -90,6 +90,12 @@ class ProgramExecutorImpl {
         } else {
             allSettings = JSON.parse(storedSettings)
         }
+        // Just make sure to initialize "new" settings over existing saved one.
+        Object.entries(DEFAULT_SETTINGS).forEach((key, value) => {
+            if (typeof allSettings[key] === 'undefined') {
+                allSettings[key] = value
+            }
+        })
         this.allSettings = allSettings
     }
 
