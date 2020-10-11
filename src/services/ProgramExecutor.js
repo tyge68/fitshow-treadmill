@@ -221,7 +221,7 @@ class ProgramExecutorImpl {
                 this.selectedProgram.steps.forEach(step => programQueue.push(step))
             }
             this.scaleForSettings()
-            this.programDuration = this.selectedProgram ? this.currentStepDuration * this.selectedProgram.steps.length : 0
+            this.programDuration = this.selectedProgram ? this.currentStepDuration * this.programQueue.length : 0
         }
 
         EventBus.$emit("trainingProgramReInit")
