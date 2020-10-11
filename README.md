@@ -22,4 +22,4 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-Go on [Live Demo](https://salmon-island-0ae461103.azurestaticapps.net/#)] for using it.
+Go on [Live Demo](https://salmon-island-0ae461103.azurestaticapps.net/#) for using it.
