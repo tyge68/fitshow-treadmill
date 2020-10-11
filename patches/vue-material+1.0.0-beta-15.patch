@@ -1,0 +1,26 @@
+diff --git a/node_modules/vue-material/dist/vue-material.js b/node_modules/vue-material/dist/vue-material.js
+index 0e3cc3c..2f0a657 100644
+--- a/node_modules/vue-material/dist/vue-material.js
++++ b/node_modules/vue-material/dist/vue-material.js
+@@ -1057,7 +1057,7 @@ exports.default = {
+       this.clearField();
+     },
+     isInvalidValue: function isInvalidValue() {
+-      return this.$el.validity.badInput;
++      return this.$el.validity ? this.$el.validity.badInput : false;
+     },
+     setFieldValue: function setFieldValue() {
+       this.MdField.value = this.model;
+diff --git a/node_modules/vue-material/src/components/MdField/MdFieldMixin.js b/node_modules/vue-material/src/components/MdField/MdFieldMixin.js
+index 1457606..a93c6ec 100644
+--- a/node_modules/vue-material/src/components/MdField/MdFieldMixin.js
++++ b/node_modules/vue-material/src/components/MdField/MdFieldMixin.js
+@@ -114,7 +114,7 @@ export default {
+       this.clearField()
+     },
+     isInvalidValue () {
+-      return this.$el.validity.badInput
++      return this.$el.validity ? this.$el.validity.badInput : false
+     },
+     setFieldValue () {
+       this.MdField.value = this.model
