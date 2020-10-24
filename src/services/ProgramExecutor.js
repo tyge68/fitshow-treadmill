@@ -181,6 +181,7 @@ class ProgramExecutorImpl {
         this.programInterval = null
         this.progressInterval = null
         EventBus.$emit('trainingProgramStopped')
+        this.reinitProgram()
     }
 
     getSteps() {
