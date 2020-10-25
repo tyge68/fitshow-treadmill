@@ -44,6 +44,16 @@
           <div class="md-layout">
             <div class="md-layout-item">
               <md-field>
+                <label>Average Speed</label>
+                <md-select v-model="settings.avgSpeed" name="avgSpeed">
+                  <md-option v-for="(n, index) in validAverages" :key="index" :value="n">{{ n }}</md-option>
+                </md-select>
+              </md-field>
+            </div>
+          </div>
+          <div class="md-layout">
+            <div class="md-layout-item">
+              <md-field>
                 <label>Program</label>
                 <md-select v-model="settings.programId" name="programId">
                   <md-option @md-selected="selectProgram" v-for="(item, index) in programs" :key="index" :value="index">{{ item.title }}</md-option>
@@ -73,8 +83,9 @@ export default {
       programs: ProgramExecutor.getAllPrograms(),
       settings: ProgramExecutor.getSettings(),
       validLoops: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
-      validDistances: [ 1, 2, 3, 5, 10, 15, 30 ],
-      validTimes: [ 5, 10, 30, 45, 60, 90 ]
+      validDistances: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 21.1, 42.2 ],
+      validTimes: [ 5, 10, 30, 45, 60, 90 ],
+      validAverages: [ 'disabled', 5, 6, 7, 8, 9, 10, 11, 12 ]
     }
   },
   methods: {

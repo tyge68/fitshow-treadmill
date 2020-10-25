@@ -17,6 +17,7 @@ class ProgramExecutorImpl {
     }
 
     scaleForSettings() {
+        this.initStepsWithAverageSpeed()
         switch(this.allSettings.mode) {
             case 'time': this.scaleForTime(); break
             case 'distance': this.scaleForDistance(); break
@@ -185,16 +186,34 @@ class ProgramExecutorImpl {
     }
 
     getSteps() {
-        return JSON.parse(JSON.stringify(this.programQueue))
+        return this._steps
+    }
+
+    initStepsWithAverageSpeed() {
+        let _steps = JSON.parse(JSON.stringify(this.programQueue))
+        if (!isNaN(this.allSettings.avgSpeed)) {
+            // scale steps for avgSpeed
+            let math = window.math
+            let sumSpeedScaled = math.sum(_steps.map(i => i.s))
+            let avgSpeedSteps = sumSpeedScaled / _steps.length
+            let diffFactorTarget = avgSpeedSteps / this.allSettings.avgSpeed
+            _steps.forEach(s => {
+                let newSpeed = s.s / diffFactorTarget
+                newSpeed = Math.round(newSpeed * 10) / 10
+                s.s = Math.max(Math.min(newSpeed, 15), 1)
+            })
+        }
+        this._steps = _steps
     }
     
     execute() {
       if (BTService.isRunning() && this.programQueue.length > 0) {
-        let previousSteps = this.getSteps()
-        this.currentStep = this.programQueue.shift()
-        EventBus.$emit("trainingStepChanged", previousSteps, this.currentStep)
+        let allSteps = this.getSteps()
+        EventBus.$emit("trainingStepChanged", allSteps)
+        this.currentStep = allSteps[0]
         this.currentStepStartTime = Date.now()
         BTService.sendIncAndSpeed(this.currentStep.i, this.currentStep.s)
+        this._steps.shift()
       } else {
           this.stop()
       }
