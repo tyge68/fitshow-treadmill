@@ -11,10 +11,10 @@
       </div>
       <div class="md-layout">
         <div class="md-layout-item">
-          <div :class='showChartPanel'>
+          <div :class='showChartPanel()'>
             <Chart />
           </div>
-          <div :class='showStatusPanel'>
+          <div :class='showStatusPanel()'>
             <StatusInfo />
           </div>
         </div>
@@ -49,15 +49,27 @@ export default {
       CommandPanel,
       Chart
   },
-  computed: {
-      showChartPanel() {
-        let toggleCountMod = this.$store.state.toggleCount % 2;
-        return toggleCountMod === 0 ? 'md-hide':'';
-      },
-      showStatusPanel() {
-        let toggleCountMod = this.$store.state.toggleCount % 2;
-        return toggleCountMod === 1 ? 'md-hide':''
-      }
+  mounted() {
+    window.addEventListener(
+      "orientationchange",
+      this.handleOrientationChange
+    );
+  },
+  methods: {
+    handleOrientationChange() {
+      console.log("force update")
+      this.$forceUpdate()
+    },
+    showChartPanel() {
+      let toggleCountMod = this.$store.state.toggleCount % 2;
+      let isPortrait = window.screen.orientation.type === 'portrait-primary';
+      return isPortrait ? '' : toggleCountMod === 0 ? 'md-hide':'';
+    },
+    showStatusPanel() {
+      let toggleCountMod = this.$store.state.toggleCount % 2;
+      let isPortrait = window.screen.orientation.type === 'portrait-primary';
+      return isPortrait ? '' : toggleCountMod === 1 ? 'md-hide':'';
+    }
   },
   created() {
     if (!this.$store.state.connected) {
@@ -69,5 +81,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>
