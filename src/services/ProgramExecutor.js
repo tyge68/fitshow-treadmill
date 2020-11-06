@@ -185,8 +185,16 @@ class ProgramExecutorImpl {
         this.reinitProgram()
     }
 
+    hasMoreSteps() {
+        return this._steps && this._steps.length > 0
+    }
+
     getSteps() {
         return this._steps
+    }
+
+    shiftSteps() {
+        this.hasMoreSteps() && this._steps.shift()
     }
 
     initStepsWithAverageSpeed() {
@@ -207,13 +215,13 @@ class ProgramExecutorImpl {
     }
     
     execute() {
-      if (BTService.isRunning() && this.programQueue.length > 0) {
+      if (BTService.isRunning() && this.hasMoreSteps()) {
         let allSteps = this.getSteps()
         EventBus.$emit("trainingStepChanged", allSteps)
         this.currentStep = allSteps[0]
         this.currentStepStartTime = Date.now()
         BTService.sendIncAndSpeed(this.currentStep.i, this.currentStep.s)
-        this._steps.shift()
+        this.shiftSteps()
       } else {
           this.stop()
       }
