@@ -1,7 +1,7 @@
 <template>
   <md-app>
     <md-app-content>
-      <h1>Sportstech Treadmill F31</h1>
+      <h1>Sportstech Treadmill F31 ( version {{ version }})</h1>
       <p>This is a simple application to control your treadmill F31, and run with your favorite training programs.</p>
       <img width="40%" height="auto" src="../assets/f31.jpg" />
       <hr>
@@ -20,6 +20,11 @@ export default {
   methods: {
     btConnect() {
       BTService.initBTConnection();
+    }
+  },
+  data() {
+    return {
+      version: process.env.GIT_HASH
     }
   },
   created() {
