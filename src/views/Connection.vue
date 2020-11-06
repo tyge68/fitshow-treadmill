@@ -1,7 +1,7 @@
 <template>
   <md-app>
     <md-app-content>
-      <h1>Sportstech Treadmill F31 ( version {{ version }})</h1>
+      <h1>Sportstech Treadmill F31 <a :href="gitUrl" target="_blank">v{{ version }}</a></h1>
       <p>This is a simple application to control your treadmill F31, and run with your favorite training programs.</p>
       <img width="40%" height="auto" src="../assets/f31.jpg" />
       <hr>
@@ -24,7 +24,8 @@ export default {
   },
   data() {
     return {
-      version: process.env.GIT_HASH
+      version: process.env.GIT_HASH,
+      gitUrl: "https://github.com/tyge68/fitshow-treadmill/commit/" + process.env.GIT_HASH
     }
   },
   created() {
