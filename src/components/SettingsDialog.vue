@@ -58,6 +58,9 @@
                 <md-select v-model="settings.programId" name="programId">
                   <md-option @md-selected="selectProgram" v-for="(item, index) in programs" :key="index" :value="index">{{ item.title }}</md-option>
                 </md-select>
+                <md-button @click="randomizeProgram" class="md-mini md-primary" :class="{ 'md-hide': settings.programId !== 0 }">
+                  <md-icon>refresh</md-icon>
+                </md-button>
               </md-field>
             </div>
           </div>
@@ -71,8 +74,8 @@
 </template>
 
 <script>
-import { ProgramExecutor } from '../services/ProgramExecutor'
-import { EventBus } from '../event-bus'
+import {ProgramExecutor} from '@/services/ProgramExecutor'
+import {EventBus} from '@/event-bus'
 
 export default {
   name: 'SettingsDialog',
@@ -89,9 +92,13 @@ export default {
     }
   },
   methods: {
+    randomizeProgram() {
+      ProgramExecutor.ensureRandom()
+      ProgramExecutor.saveSettings(this.settings)
+      ProgramExecutor.reinitProgram()
+    },
     selectProgram(value) {
-      let selectedProgramIdx = value
-      let selectedProgram = ProgramExecutor.getAllPrograms()[selectedProgramIdx]
+      let selectedProgram = ProgramExecutor.getAllPrograms()[value]
       this.programTitle = selectedProgram.title
     },
     saveChanges() {

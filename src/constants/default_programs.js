@@ -34,7 +34,17 @@ const MOUNTAIN_HELL = {
     ]
   }
 
+  const RANDOM_STEPS = {
+    readOnly: true,
+    title: 'Random',
+    isRandom: true,
+    stepDuration: 120,
+    steps: [
+    ]
+}
+
 export const ALL_PROGRAMS = [
+  RANDOM_STEPS,
   CHAOTIC_HILLS,
   EASY_PIZZY,
   MOUNTAIN_HELL

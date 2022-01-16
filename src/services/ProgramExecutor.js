@@ -1,7 +1,7 @@
-import { EventBus } from '../event-bus'
+import { EventBus } from '@/event-bus'
 import { BTService, STOP_COMMAND } from './BTService'
-import { ALL_PROGRAMS } from '../constants/default_programs'
-import { DEFAULT_SETTINGS } from '../constants/default_settings'
+import { ALL_PROGRAMS } from '@/constants/default_programs'
+import { DEFAULT_SETTINGS } from '@/constants/default_settings'
 
 import moment from 'moment'
 import momentDuration from 'moment-duration-format'
@@ -67,6 +67,33 @@ class ProgramExecutorImpl {
         } else {
           this.allPrograms = JSON.parse(storedPrograms)
         }
+        this.ensureRandom()
+    }
+
+    ensureRandom() {
+        const randomProgram = this.getRandomProgram()
+        if (!this.allPrograms[0].isRandom) {
+            this.allPrograms.unshift(randomProgram)
+        } else {
+            this.allPrograms[0] = randomProgram
+        }
+    }
+
+    getRandomProgram() {
+        function getRandomSpeed() {
+            return Math.floor(Math.random() * 9) + 3;
+        }
+        function getRandomIncline() {
+            return Math.floor(Math.random() * 14);
+        }
+        const randomProgram = JSON.parse(JSON.stringify(ALL_PROGRAMS[0]))
+        // generate random steps
+        const newSteps = []
+        for (let i=0; i < 10; i++) {
+            newSteps.push({ s: getRandomSpeed(), i: getRandomIncline()})
+        }
+        randomProgram.steps = newSteps
+        return randomProgram
     }
 
     savePrograms() {
@@ -137,7 +164,7 @@ class ProgramExecutorImpl {
             stepProgressRatio = 0,
             stepRemainingTime = 0
 
-        if (BTService.isRunning()&& this.isExecuting()) {
+        if (BTService.isRunning() && this.isExecuting()) {
             let currentProgramDuration = Math.round((Date.now() - this.programStartTime) / 1000)
             programProgressRatio = Math.round( currentProgramDuration * 100 / this.programDuration)
             programRemainingTime = moment.duration(this.programDuration - currentProgramDuration, 'seconds').format('H:mm:ss')
@@ -160,7 +187,7 @@ class ProgramExecutorImpl {
     }
 
     isExecuting() {
-        return this.programInterval && true
+        return this.programInterval
     }
 
     start() {
