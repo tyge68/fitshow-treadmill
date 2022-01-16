@@ -38,6 +38,7 @@ const MOUNTAIN_HELL = {
     readOnly: true,
     title: 'Random',
     isRandom: true,
+    nbRandomSteps: 10,
     stepDuration: 120,
     steps: [
     ]

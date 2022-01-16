@@ -48,6 +48,10 @@ class ProgramExecutorImpl {
         this.currentStepDuration = newDuration
     }
 
+    setRandomSteps(nbSteps) {
+        this.allPrograms[0].nbRandomSteps = nbSteps
+    }
+
     importPrograms(programs) {
         // verify programs
         // then impports
@@ -71,29 +75,29 @@ class ProgramExecutorImpl {
     }
 
     ensureRandom() {
-        const randomProgram = this.getRandomProgram()
         if (!this.allPrograms[0].isRandom) {
+            const randomProgram = JSON.parse(JSON.stringify(ALL_PROGRAMS[0]))
+            randomProgram.steps = this.getRandomProgramSteps(randomProgram.nbRandomSteps)
             this.allPrograms.unshift(randomProgram)
         } else {
-            this.allPrograms[0] = randomProgram
+            const randomProgram = this.allPrograms[0]
+            randomProgram.steps = this.getRandomProgramSteps(randomProgram.nbRandomSteps)
         }
     }
 
-    getRandomProgram() {
+    getRandomProgramSteps(nbSteps) {
         function getRandomSpeed() {
             return Math.floor(Math.random() * 9) + 3;
         }
         function getRandomIncline() {
             return Math.floor(Math.random() * 14);
         }
-        const randomProgram = JSON.parse(JSON.stringify(ALL_PROGRAMS[0]))
         // generate random steps
         const newSteps = []
-        for (let i=0; i < 10; i++) {
+        for (let i=0; i < nbSteps; i++) {
             newSteps.push({ s: getRandomSpeed(), i: getRandomIncline()})
         }
-        randomProgram.steps = newSteps
-        return randomProgram
+        return newSteps
     }
 
     savePrograms() {

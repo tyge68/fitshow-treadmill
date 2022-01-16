@@ -58,6 +58,7 @@
                 <md-select v-model="settings.programId" name="programId">
                   <md-option @md-selected="selectProgram" v-for="(item, index) in programs" :key="index" :value="index">{{ item.title }}</md-option>
                 </md-select>
+                <md-input v-model="nbRandomSteps" type="number" step="1" min="5" :class="{ 'md-hide': settings.programId !== 0 }"></md-input>
                 <md-button @click="randomizeProgram" class="md-mini md-primary" :class="{ 'md-hide': settings.programId !== 0 }">
                   <md-icon>refresh</md-icon>
                 </md-button>
@@ -82,6 +83,7 @@ export default {
   data() {
     return {
       showDlg: false,
+      nbRandomSteps: ProgramExecutor.getProgram(0).nbRandomSteps,
       programTitle: 'Select Program',
       programs: ProgramExecutor.getAllPrograms(),
       settings: ProgramExecutor.getSettings(),
@@ -93,6 +95,7 @@ export default {
   },
   methods: {
     randomizeProgram() {
+      ProgramExecutor.setRandomSteps(this.nbRandomSteps)
       ProgramExecutor.ensureRandom()
       ProgramExecutor.saveSettings(this.settings)
       ProgramExecutor.reinitProgram()
