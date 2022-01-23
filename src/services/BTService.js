@@ -18,6 +18,7 @@ export const EVENT_STARTING = 'starting';
 export const EVENT_STOPPED = 'stopped';
 
 const MESAGE_ENDING = [3];
+const MAX_RETRIES = 5;
 
 let s_serialPort, c_serialPortRead, c_serialPortWrite;
 
@@ -29,6 +30,7 @@ class BTServiceImpl {
         this.status = 'Undefined';
         this.messageQueue = [];
         this.states = {};
+        this.retries = MAX_RETRIES;
         this.connected = false;
     }
 
@@ -113,9 +115,15 @@ class BTServiceImpl {
                 this.lastMessage = null;
             } else {
                 console.log("invalid response");
+                this.retries--
             }
         } else {
             console.log("invalid response");
+            this.retries--
+        }
+        if (this.retries <= 0) {
+            this.lastMessage = null
+            this.retries = MAX_RETRIES
         }
     }
 
@@ -144,9 +152,6 @@ class BTServiceImpl {
                 this.addMessage(STATUS_COMMAND);
             }
         }
-        let a = [];
-        this.messageQueue.forEach(i => a.push(this.convertArray(i)));
-        //messageQueueDiv.innerHTML = a.join('<br>');
     }
 
     sendMessage(valueArray) {
@@ -183,7 +188,11 @@ class BTServiceImpl {
         if (this.isRunning()) {
             let newSpeed = speed === -1 ? this.states.currentSpeed : speed;
             let newIncline = incline === -1 ? this.states.currentIncline : incline;
-            let customIncSpeed = this.mergeTypedArraysUnsafe(new Uint8Array(INC_SPEED_COMMAND), new Uint8Array([newSpeed * 10]), new Uint8Array([newIncline]));
+            let customIncSpeed = this.mergeTypedArraysUnsafe(
+                new Uint8Array(INC_SPEED_COMMAND),
+                new Uint8Array([newSpeed * 10]),
+                new Uint8Array([newIncline])
+            );
             this.addMessage(customIncSpeed);
         }
     }
