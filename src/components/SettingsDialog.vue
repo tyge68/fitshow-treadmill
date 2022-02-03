@@ -89,7 +89,7 @@ export default {
       settings: ProgramExecutor.getSettings(),
       validLoops: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
       validDistances: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 21.1, 42.2 ],
-      validTimes: [ 5, 10, 30, 45, 60, 90 ],
+      validTimes: [ 5, 10, 15, 20, 25, 30, 45, 60, 90 ],
       validAverages: [ 'disabled', 5, 6, 7, 8, 9, 10, 11, 12 ]
     }
   },
