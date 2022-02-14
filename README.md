@@ -22,4 +22,4 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-Go on [Live Demo](https://threadmill-training.netlify.app/) for using it.
+Go on [Live Demo](https://master--treadmill-training.netlify.app/#/) for using it.
